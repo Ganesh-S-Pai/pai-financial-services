@@ -8,14 +8,6 @@
                         hide-details single-line>
                     </v-text-field>
                 </template>
-
-                <template #item.actions>
-                    <div class="d-flex ga-2">
-                        <v-icon color="medium-emphasis" icon="mdi-pencil" size="small" @click="() => { }"></v-icon>
-
-                        <v-icon color="medium-emphasis" icon="mdi-delete" size="small" @click="() => { }"></v-icon>
-                    </div>
-                </template>
             </v-data-table>
         </v-container>
     </PfsCard>
@@ -44,7 +36,6 @@ onMounted(async () => {
             title: key.charAt(0).toUpperCase() + key.slice(1),
             value: key,
         }));
-    headers.value.push({ title: 'Actions', value: 'actions' })
     loading.value = false;
 });
 </script>
