@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- Register Page Content -->
+        Hello from Register Page
     </div>
 </template>
 

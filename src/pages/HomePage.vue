@@ -5,11 +5,13 @@
             Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
             documentation
         </p>
+        <router-link to="/register">Go to Register Page</router-link>
+        <router-link to="/login">Go to Login Page</router-link>
     </PfsCard>
 </template>
 
 <script setup lang="ts">
-import PfsCard from '@/components/PfsCard.vue';
+import PfsCard from '@/components/UI/PfsCard.vue';
 
 </script>
 

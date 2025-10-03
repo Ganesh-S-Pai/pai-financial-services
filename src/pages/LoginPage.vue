@@ -1,11 +1,10 @@
 <template>
     <div>
-        <!-- Login Page Content -->
+        this is Login page
     </div>
 </template>
 
 <script setup lang="ts">
-// Add your script logic here
 </script>
 
 <style scoped>
