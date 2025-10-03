@@ -4,7 +4,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import vuetify from './utils/vuetify'
-
+import '@mdi/font/css/materialdesignicons.css'
 
 const app = createApp(App)
 
