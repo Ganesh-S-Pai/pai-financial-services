@@ -1,11 +1,8 @@
 <template>
-    <div>
-        this is Login page
-    </div>
+  <div>this is Login page</div>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
 /* Add your styles here */

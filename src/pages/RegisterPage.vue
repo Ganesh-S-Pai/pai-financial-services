@@ -1,7 +1,5 @@
 <template>
-    <div>
-        Hello from Register Page
-    </div>
+  <div>Hello from Register Page</div>
 </template>
 
 <script setup lang="ts">
