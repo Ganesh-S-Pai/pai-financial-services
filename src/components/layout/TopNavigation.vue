@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { useCommonStore } from '@/stores/common';
 import { computed } from 'vue';
-import { useDisplay } from 'vuetify/lib/composables/display'
+import { useDisplay } from 'vuetify';
 
 const commonStore = useCommonStore()
 const { mdAndDown } = useDisplay()

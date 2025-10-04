@@ -19,8 +19,8 @@
 <script setup lang="ts">
 import { routes } from '@/router'
 import { computed } from 'vue'
-import { useDisplay } from 'vuetify/lib/composables/display'
 import { useCommonStore } from '@/stores/common';
+import { useDisplay } from 'vuetify';
 
 const commonStore = useCommonStore()
 const { mdAndDown } = useDisplay()
