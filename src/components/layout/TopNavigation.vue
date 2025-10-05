@@ -1,8 +1,8 @@
 <template>
   <v-app-bar app dark color="purple-darken-4" class="flex justify-end">
-    <v-app-bar-nav-icon v-if="isMobile" @click="commonStore.drawer = !commonStore.drawer" />
+    <v-app-bar-nav-icon v-if="showDrawer" @click="commonStore.drawer = !commonStore.drawer" />
 
-    <v-app-bar-title class="text-right mr-4">
+    <v-app-bar-title class="text-right mr-4" @click="redirectToHome()">
       <strong> Pai Financial Services </strong>
     </v-app-bar-title>
 
@@ -13,14 +13,18 @@
 </template>
 
 <script setup lang="ts">
+import { isAuthenticated } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
+import { useRedirect } from '@/utils/redirect';
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 
 const commonStore = useCommonStore()
 const { mdAndDown } = useDisplay()
+const { redirectToHome } = useRedirect()
 
 const isMobile = computed(() => mdAndDown.value)
+const showDrawer = computed(() => isMobile.value && isAuthenticated())
 </script>
 
 <style scoped></style>

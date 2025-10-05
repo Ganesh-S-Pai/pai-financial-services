@@ -1,5 +1,5 @@
 <template>
-  <v-card :title="title" :loading="loading" class="pfs-card-container h-screen">
+  <v-card :title="title" :loading="loading" class="pfs-card-container h-full">
     <div class="pfs-card" v-if="!loading">
       <slot />
     </div>

@@ -1,17 +1,16 @@
 <template>
-  <PfsCard title="PFS" height="200" class="d-flex flex-column align-center justify-center">
-    <h1>You did it!</h1>
-    <p>
-      Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-      documentation
-    </p>
-    <router-link to="/register">Go to Register Page</router-link>
-    <router-link to="/login">Go to Login Page</router-link>
-  </PfsCard>
+  <SideNavigation />
+  <router-view v-slot="{ Component }">
+    <transition mode="out-in" enter-active-class="transition-opacity duration-1000" enter-from-class="opacity-0"
+      enter-to-class="opacity-100" leave-active-class="transition-opacity duration-1000" leave-from-class="opacity-100"
+      leave-to-class="opacity-0">
+      <component :is="Component" />
+    </transition>
+  </router-view>
 </template>
 
 <script setup lang="ts">
-import PfsCard from '@/components/UI/PfsCard.vue'
+import SideNavigation from '@/components/layout/SideNavigation.vue';
 </script>
 
 <style scoped></style>
