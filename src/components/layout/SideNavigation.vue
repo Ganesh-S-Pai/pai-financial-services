@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer app v-model="commonStore.drawer" image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
+  <v-navigation-drawer app v-model="showDrawer" image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
     :permanent="!isMobile">
 
     <v-list-item dense base-color="white" title="Van Heusen" prepend-icon="mdi-tshirt-crew" class="mt-2" to="/vhiw"></v-list-item>
@@ -35,6 +35,7 @@ const { redirect } = useRedirect()
 const toggleSettings = ref(false)
 
 const isMobile = computed(() => mdAndDown.value)
+const showDrawer = computed(() => isMobile.value ? commonStore.drawer : true)
 
 const handleLogout = () => {
   logoutUser()

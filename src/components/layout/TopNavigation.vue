@@ -2,7 +2,7 @@
   <v-app-bar app dark color="purple-darken-4" class="flex justify-end">
     <v-app-bar-nav-icon v-if="showDrawer" @click="commonStore.drawer = !commonStore.drawer" />
 
-    <v-app-bar-title class="text-right mr-4" @click="redirectToHome()">
+    <v-app-bar-title class="text-right mr-4 cursor-pointer" @click="redirectToHome()">
       <strong> Pai Financial Services </strong>
     </v-app-bar-title>
 
