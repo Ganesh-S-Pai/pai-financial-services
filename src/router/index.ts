@@ -18,7 +18,7 @@ const router = createRouter({
       },
       {
         path: '/vhiw',
-        name: 'VHIW Mysore',
+        name: 'Van Heusen',
         component: () => import('@/pages/VhiwPage.vue'),
         meta: { login: true },
       },
@@ -47,7 +47,7 @@ router.beforeEach((to, _from, next) => {
   const { isAuthenticated } = useAuthentication();
 
   if (to.meta.login) {
-    const isUserAuthenticated = !!isAuthenticated.value;
+    const isUserAuthenticated = !!isAuthenticated();
     if (!isUserAuthenticated) {
       return next({ name: 'Login', query: { redirect: to.fullPath } });
     }

@@ -1,24 +1,25 @@
 import type { AuthCredentials, AuthResponse } from "@/types/auth"
-import { computed } from "vue"
+import { apiGateway } from "@/utils/apiGateway"
 
 export const useAuthentication = () => {
-    const isAuthenticated = computed((): boolean => getAuthToken() !== null)
+    const { post } = apiGateway()
 
     const authenticateUser = async (email: string, password: string): Promise<AuthResponse | null> => {
-        const baseUrl = import.meta.env.VITE_API_URL
+        const endpoint = '/auth/login'
         const body: AuthCredentials = { email, password }
 
-        const response = await fetch(`${baseUrl}/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        const response = await post(endpoint,
+            body,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             },
-            body: JSON.stringify(body),
-        })
-        if (response.ok) {
-            const data = await response.json()
-            localStorage.setItem('token', data.token)
-            return data
+        )
+
+        if (response.token) {
+            localStorage.setItem('token', response.token)
+            return response
         } else {
             return null
         }
@@ -27,6 +28,8 @@ export const useAuthentication = () => {
     const logoutUser = (): void => { localStorage.removeItem('token') }
 
     const getAuthToken = (): string | null => localStorage.getItem('token')
+
+    const isAuthenticated = () => (): boolean => getAuthToken() !== null
 
     return { isAuthenticated, authenticateUser, logoutUser, getAuthToken }
 }

@@ -25,7 +25,7 @@ const { mdAndDown } = useDisplay()
 const { redirectToHome } = useRedirect()
 
 const isMobile = computed(() => mdAndDown.value)
-const showDrawer = computed(() => isMobile.value && isAuthenticated.value)
+const showDrawer = computed(() => isMobile.value && isAuthenticated())
 </script>
 
 <style scoped></style>
