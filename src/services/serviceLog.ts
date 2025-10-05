@@ -1,21 +1,16 @@
+import { localeDateString } from "@/utils/date"
+
 export const getServiceLog = async (): Promise<ServiceLog[]> => {
   const baseUrl = import.meta.env.VITE_API_URL
+  // const baseUrl = import.meta.env.VITE_API_LOCAL_URL
 
   return fetch(`${baseUrl}/sales-logs`)
     .then((response) => response.json())
     .then((data) => {
       return data.map((item: ServiceLog) => ({
         ...item,
-        date: new Date(item.date).toLocaleDateString('en-US', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }),
-        created: new Date(item.created).toLocaleDateString('en-US', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }),
+        date: localeDateString(item.date),
+        created: localeDateString(item.created)
       }))
     })
     .catch((error) => {
