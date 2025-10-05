@@ -1,20 +1,19 @@
 import { useRouter } from 'vue-router'
 
 export const useRedirect = () => {
-    const redirect = (url: string): void => {
-        const router = useRouter()
-        router.replace(url)
-    }
+  const router = useRouter() // ✅ Get router once, inside composable setup
 
-    const redirectToLogin = (redirectPath: string): void => {
-        const router = useRouter()
-        router.push({ name: 'Login', query: { redirect: redirectPath } })
-    }
+  const redirect = (url: string): void => {
+    router.replace(url)
+  }
 
-    const redirectToHome = (): void => {
-        const router = useRouter()
-        router.push({ name: 'Home' })
-    }
+  const redirectToLogin = (redirectPath: string): void => {
+    router.push({ name: 'Login', query: { redirect: redirectPath } })
+  }
 
-    return { redirect, redirectToLogin, redirectToHome }
+  const redirectToHome = (): void => {
+    router.push({ name: 'Home' })
+  }
+
+  return { redirect, redirectToLogin, redirectToHome }
 }

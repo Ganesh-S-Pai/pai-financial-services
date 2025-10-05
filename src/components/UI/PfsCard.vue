@@ -1,5 +1,5 @@
 <template>
-  <v-card :title="title" :loading="loading" class="pfs-card-container h-full">
+  <v-card :title="title" :loading="loading" :subtitle="subtitle" class="pfs-card-container h-full">
     <div class="pfs-card" v-if="!loading">
       <slot />
     </div>
@@ -16,11 +16,17 @@ defineProps({
     required: false,
     default: '',
   },
+  subtitle: {
+    type: String,
+    required: false,
+    default: '',
+  },
   loading: {
     type: Boolean,
     required: false,
     default: false,
   },
+
 })
 </script>
 

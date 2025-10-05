@@ -1,5 +1,5 @@
 <template>
-  <PfsCard class="d-flex flex-column align-center">
+  <PfsCard class="d-flex flex-column align-center" :loading="isLoading">
     <div class="mt-16 pb-16">
       <h1 class="login-title-wrapper">Login Page</h1>
       <p class="mb-6 text-gray-900"> Please enter your credentials to log in.</p>
@@ -16,6 +16,7 @@
         @click="handleLogin">
         <strong> Log In </strong>
       </v-btn>
+
       <v-btn class="mb-8 mt-4" color="secondary" size="large" variant="outlined" block>
         <strong> Sign Up </strong>
       </v-btn>
@@ -25,7 +26,7 @@
 
 <script setup lang="ts">
 import PfsCard from '@/components/UI/PfsCard.vue';
-import { authenticateUser, logoutUser } from '@/services/authService';
+import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
 import { useRedirect } from '@/utils/redirect';
 import { computed, onMounted, ref } from 'vue';
@@ -35,17 +36,25 @@ const route = useRoute();
 const { redirect } = useRedirect();
 
 const commonStore = useCommonStore();
+const { authenticateUser, logoutUser } = useAuthentication();
 
 const email = ref('');
 const password = ref('');
 const showPassword = ref(false)
+const isLoading = ref(false)
 
 const disableLogin = computed(() => email.value === '' || password.value.length < 8);
 
 const handleLogin = () => {
+  isLoading.value = true;
   authenticateUser(email.value, password.value)
     .then(() => {
       const redirectPath = (route.query?.redirect as string) || '/';
+      commonStore.addToast({
+        message: 'Login successful!',
+        color: 'success'
+      });
+      isLoading.value = false;
       return redirect(redirectPath)
     })
     .catch((error) => {
@@ -54,6 +63,7 @@ const handleLogin = () => {
         color: 'error'
       });
       console.error('Login failed:', error);
+      isLoading.value = false;
     });
 };
 

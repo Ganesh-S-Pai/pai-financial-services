@@ -1,35 +1,49 @@
 <template>
   <v-navigation-drawer app v-model="commonStore.drawer" image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
     :permanent="!isMobile">
-    <v-list-item v-for="route in myRoutes" :key="route.path" :to="route.path" :title="route.name as string"
-      base-color="white">
-    </v-list-item>
+
+    <v-list-item dense base-color="white" title="Van Heusen" prepend-icon="mdi-tshirt-crew" class="mt-2" to="/vhiw"></v-list-item>
+    <v-list-item dense base-color="white" title="Malt House" prepend-icon="mdi-taxi" to="/malt"></v-list-item>
 
     <template v-slot:append>
       <v-divider color="white" thickness="3" />
-      <v-list-item dense base-color="white">
-        <v-list-item-title>Settings</v-list-item-title>
-        <template #prepend>
-          <v-icon>mdi-cog</v-icon>
-        </template>
-      </v-list-item>
+      <v-expand-transition>
+        <div v-if="toggleSettings">
+          <v-list-item dense base-color="white" title="Profile" prepend-icon="mdi-account" to="/profile"></v-list-item>
+          <v-list-item dense base-color="white" title="Logout" prepend-icon="mdi-logout"
+            @click="handleLogout"></v-list-item>
+        </div>
+      </v-expand-transition>
+      <v-list-item dense base-color="white" title="Settings" prepend-icon="mdi-cog" class="mb-2"
+        @click="toggleSettings = !toggleSettings"></v-list-item>
     </template>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
+import { useAuthentication } from '@/services/authService'
 import { useCommonStore } from '@/stores/common'
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRedirect } from '@/utils/redirect'
+import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
-
-const routes = useRouter().getRoutes()
 
 const commonStore = useCommonStore()
 const { mdAndDown } = useDisplay()
+const { logoutUser } = useAuthentication()
+const { redirect } = useRedirect()
+
+const toggleSettings = ref(false)
 
 const isMobile = computed(() => mdAndDown.value)
-const myRoutes = Object.values(routes).filter((r) => !['Login', 'Register', 'Not Found'].includes(r.name as string))
+
+const handleLogout = () => {
+  logoutUser()
+  commonStore.addToast({
+    message: 'Logged out successfully',
+    color: 'success'
+  })
+  redirect('/login')
+}
 </script>
 
 <style scoped></style>

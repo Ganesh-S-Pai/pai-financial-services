@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import PfsCard from '@/components/UI/PfsCard.vue'
-import { getSalesLog, type SalesLog } from '@/services/salesService'
+import { useSalesService, type SalesLog } from '@/services/salesService'
 import type { TableHeader } from '@/types/common'
 import { onMounted, ref } from 'vue'
 import type { SortItem } from 'vuetify/lib/components/VDataTable/composables/sort.mjs'
@@ -28,6 +28,8 @@ const loading = ref(false)
 
 onMounted(async () => {
   loading.value = true
+
+  const { getSalesLog } = useSalesService()
   salesLog.value = await getSalesLog()
 
   headers.value = Object.keys(salesLog.value[0] || {})

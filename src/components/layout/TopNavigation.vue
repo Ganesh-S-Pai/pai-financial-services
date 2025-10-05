@@ -13,18 +13,19 @@
 </template>
 
 <script setup lang="ts">
-import { isAuthenticated } from '@/services/authService';
+import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
 import { useRedirect } from '@/utils/redirect';
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 
+const { isAuthenticated } = useAuthentication()
 const commonStore = useCommonStore()
 const { mdAndDown } = useDisplay()
 const { redirectToHome } = useRedirect()
 
 const isMobile = computed(() => mdAndDown.value)
-const showDrawer = computed(() => isMobile.value && isAuthenticated())
+const showDrawer = computed(() => isMobile.value && isAuthenticated.value)
 </script>
 
 <style scoped></style>

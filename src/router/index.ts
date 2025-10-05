@@ -1,4 +1,4 @@
-import { isAuthenticated } from '@/services/authService';
+import { useAuthentication } from '@/services/authService';
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -11,11 +11,23 @@ const router = createRouter({
     redirect: '/vhiw',
     children: [
       {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import('@/pages/ProfilePage.vue'),
+        meta: { login: true },
+      },
+      {
         path: '/vhiw',
         name: 'VHIW Mysore',
         component: () => import('@/pages/VhiwPage.vue'),
         meta: { login: true },
-      }
+      },
+      {
+        path: '/malt',
+        name: 'Malt House',
+        component: () => import('@/pages/MaltPage.vue'),
+        meta: { login: true },
+      },
     ]
   },
   { path: '/login', name: 'Login', component: () => import('@/pages/LoginPage.vue') },
@@ -32,8 +44,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, _from, next) => {
+  const { isAuthenticated } = useAuthentication();
+
   if (to.meta.login) {
-    const isUserAuthenticated = !!isAuthenticated();
+    const isUserAuthenticated = !!isAuthenticated.value;
     if (!isUserAuthenticated) {
       return next({ name: 'Login', query: { redirect: to.fullPath } });
     }
