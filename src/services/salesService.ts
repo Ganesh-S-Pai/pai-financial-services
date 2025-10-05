@@ -15,8 +15,8 @@ export const useSalesService = () => {
   const { getAuthToken } = useAuthentication()
 
   const getSalesLog = async (): Promise<SalesLog[]> => {
-    // const baseUrl = import.meta.env.VITE_API_URL
-    const baseUrl = import.meta.env.VITE_API_LOCAL_URL
+    const baseUrl = import.meta.env.VITE_API_URL
+    // const baseUrl = import.meta.env.VITE_API_LOCAL_URL
 
     return fetch(`${baseUrl}/vhiw/sales-logs`, {
       headers: {

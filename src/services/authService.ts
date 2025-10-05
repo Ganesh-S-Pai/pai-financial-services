@@ -5,8 +5,8 @@ export const useAuthentication = () => {
     const isAuthenticated = computed((): boolean => getAuthToken() !== null)
 
     const authenticateUser = async (email: string, password: string): Promise<AuthResponse | null> => {
-        // const baseUrl = import.meta.env.VITE_API_URL
-        const baseUrl = import.meta.env.VITE_API_LOCAL_URL
+        const baseUrl = import.meta.env.VITE_API_URL
+        // const baseUrl = import.meta.env.VITE_API_LOCAL_URL
         const body: AuthCredentials = { email, password }
 
         const response = await fetch(`${baseUrl}/auth/login`, {
