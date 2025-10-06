@@ -22,12 +22,13 @@ export const useSalesService = () => {
     try {
       const response = await get(endpoint, {
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${getAuthToken() || ''}`,
         },
       })
-      if (response.length) {
-        return response.map((item: SalesLog) => ({
+
+      const { data } = response
+      if (data.length) {
+        return data.map((item: SalesLog) => ({
           ...item,
           date: localeDateString(item.date),
           created: localeDateString(item.created)

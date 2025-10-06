@@ -1,10 +1,10 @@
-import { useCommonStore } from "@/stores/common"
+import { useAuthStore } from "@/stores/auth"
 import type { AuthCredentials, AuthResponse, SignupRequest } from "@/types/auth"
 import { apiGateway } from "@/utils/apiGateway"
 
 export const useAuthentication = () => {
     const { post } = apiGateway()
-    const commonStore = useCommonStore()
+    const authStore = useAuthStore()
 
     const authenticateUser = async (email: string, password: string): Promise<AuthResponse | null> => {
         const endpoint = '/auth/login'
@@ -12,17 +12,14 @@ export const useAuthentication = () => {
 
         const response = await post(endpoint,
             body,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            },
+            {},
         )
 
-        if (response.token) {
-            localStorage.setItem('token', response.token)
-            commonStore.user = response.user
-            return response
+        const { data } = response
+        if (data.token) {
+            authStore.userId = data.user.id
+            authStore.token = data.token
+            return data
         } else {
             return null
         }
@@ -41,18 +38,19 @@ export const useAuthentication = () => {
             },
         )
 
-        if (response.token) {
-            localStorage.setItem('token', response.token)
-            commonStore.user = response.user
-            return response
+        const { data } = response
+        if (data.token) {
+            authStore.userId = data.user.id
+            authStore.token = data.token
+            return data
         } else {
             return null
         }
     }
 
-    const logoutUser = (): void => { localStorage.removeItem('token') }
+    const logoutUser = (): void => { authStore.token = undefined }
 
-    const getAuthToken = (): string | null => localStorage.getItem('token')
+    const getAuthToken = (): string | undefined => authStore.token
 
     const isAuthenticated = () => (): boolean => getAuthToken() !== null
 

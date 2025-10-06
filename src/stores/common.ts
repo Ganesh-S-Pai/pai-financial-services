@@ -1,5 +1,4 @@
 import type { ToastItem } from '@/components/UI/types/PfsToast.types'
-import type { User } from '@/types/auth'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -7,8 +6,6 @@ export const useCommonStore = defineStore('common', () => {
     const drawer = ref(false)
 
     const toasts = ref<ToastItem[]>([])
-
-    const user = ref<User>()
 
     const addToast = (toast: ToastItem): void => {
         toasts.value.push({
@@ -28,5 +25,5 @@ export const useCommonStore = defineStore('common', () => {
         }, 3000)
     }
 
-    return { drawer, toasts, user, addToast }
+    return { drawer, toasts, addToast }
 })

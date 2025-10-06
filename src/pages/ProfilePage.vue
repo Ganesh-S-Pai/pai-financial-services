@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-4" fluid>
-    <PfsCard elevation="3" class="mx-auto my-8">
+    <PfsCard elevation="3" class="mx-auto my-8" :loading="isLoading">
       <v-card-title>
         <v-icon class="mr-2">mdi-account-circle</v-icon>
         <span class="text-h6 font-weight-bold">User Profile</span>
@@ -20,7 +20,7 @@
           <v-col cols="12" sm="6">
             <strong>Email:</strong> {{ user?.email }}
           </v-col>
-          
+
           <v-col cols="12" sm="6">
             <strong>Phone:</strong> {{ user?.phone }}
           </v-col>
@@ -46,13 +46,14 @@
 
 <script setup lang="ts">
 import PfsCard from '@/components/UI/PfsCard.vue'
-import { useCommonStore } from '@/stores/common';
+import { useUsers } from '@/services/userService'
 import type { User } from '@/types/auth'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
-const commonStore = useCommonStore();
+const { getUser } = useUsers()
 
-const user = ref<User | undefined>(commonStore.user)
+const user = ref<User | undefined>()
+const isLoading = ref(true)
 
 const formattedDOB = computed(() => {
   if (!user.value) return
@@ -65,6 +66,12 @@ function editProfile() {
   // Redirect to edit page or open dialog
   console.log('Edit profile clicked')
 }
+
+onMounted(async () => {
+  isLoading.value = true
+  user.value = await getUser()
+  isLoading.value = false
+})
 </script>
 
 <style scoped>
