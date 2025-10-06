@@ -118,7 +118,7 @@ const handleRegister = async () => {
 
   const user = {
     ...registrationData.value,
-    dob: registrationData.value.dob?.split("T")[0]
+    dob: registrationData.value.dob.split("T")[0] as string
   }
 
   try {
