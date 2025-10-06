@@ -11,21 +11,21 @@
       <v-card-text>
         <v-row dense>
           <v-col cols="12" sm="6">
-            <strong>First Name:</strong> {{ user.first_name }}
+            <strong>First Name:</strong> {{ user?.first_name }}
           </v-col>
           <v-col cols="12" sm="6">
-            <strong>Last Name:</strong> {{ user.last_name }}
+            <strong>Last Name:</strong> {{ user?.last_name }}
           </v-col>
 
           <v-col cols="12" sm="6">
-            <strong>Email:</strong> {{ user.email }}
+            <strong>Email:</strong> {{ user?.email }}
           </v-col>
           <v-col cols="12" sm="6">
             <strong>Date of Birth:</strong> {{ formattedDOB }}
           </v-col>
 
           <v-col cols="12" sm="6">
-            <strong>Gender:</strong> {{ user.gender }}
+            <strong>Gender:</strong> {{ user?.gender }}
           </v-col>
         </v-row>
       </v-card-text>
@@ -51,6 +51,7 @@ const user = ref<User | undefined>(commonStore.user)
 
 const formattedDOB = computed(() => {
   if (!user.value) return
+  
   const date = new Date(user.value.dob)
   return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
 })
