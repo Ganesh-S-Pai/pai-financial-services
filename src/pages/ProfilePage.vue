@@ -41,30 +41,16 @@
 
 <script setup lang="ts">
 import PfsCard from '@/components/UI/PfsCard.vue'
+import { useCommonStore } from '@/stores/common';
+import type { User } from '@/types/auth'
 import { ref, computed } from 'vue'
 
-// Example User object (replace with your store/api)
-interface User {
-  id: string
-  first_name: string
-  last_name: string
-  email: string
-  dob: string
-  gender: string
-}
+const commonStore = useCommonStore();
 
-// Dummy user data for demonstration
-const user = ref<User>({
-  id: '1',
-  first_name: 'John',
-  last_name: 'Doe',
-  email: 'john.doe@example.com',
-  dob: '1990-06-15',
-  gender: 'Male'
-})
+const user = ref<User | undefined>(commonStore.user)
 
-// Format DOB nicely
 const formattedDOB = computed(() => {
+  if (!user.value) return
   const date = new Date(user.value.dob)
   return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
 })

@@ -1,8 +1,8 @@
 <template>
   <PfsCard class="d-flex flex-column align-center" :loading="isLoading">
     <div class="mt-16 pb-16">
-      <h1 class="login-title-wrapper">Login Page</h1>
-      <p class="mb-6 text-gray-900"> Please enter your credentials to log in.</p>
+      <h1 class="login-title-wrapper text-center">Welcome</h1>
+      <p class="mb-6 text-gray-900 text-center"> Please enter your credentials to log in.</p>
 
       <v-form @submit.prevent="handleLogin">
         <v-text-field clearable v-model="email" type="email" label="Email" prepend-icon="mdi-account"
@@ -15,11 +15,11 @@
 
         <v-btn class="mb-8 mt-4" type="submit" color="success" size="large" variant="elevated" block
           :disabled="disableLogin">
-          <strong> Log In </strong>
+          <strong> Login </strong>
         </v-btn>
 
         <v-btn class="mb-8 mt-4" color="secondary" size="large" variant="outlined" block @click="redirect('/register')">
-          <strong> Sign Up </strong>
+          <strong> Register </strong>
         </v-btn>
       </v-form>
     </div>

@@ -9,10 +9,21 @@ export interface User {
     last_name: string,
     email: string,
     dob: string
-    gender: string
+    gender: string,
+    phone: string
 }
 
 export interface AuthCredentials {
     email: string,
+    password: string
+}
+
+export interface SignupRequest {
+    first_name: string,
+    last_name: string,
+    email: string,
+    dob: string
+    gender: string,
+    phone: string,
     password: string
 }
