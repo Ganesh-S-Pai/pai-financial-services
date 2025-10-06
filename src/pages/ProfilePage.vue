@@ -20,6 +20,11 @@
           <v-col cols="12" sm="6">
             <strong>Email:</strong> {{ user?.email }}
           </v-col>
+          
+          <v-col cols="12" sm="6">
+            <strong>Phone:</strong> {{ user?.phone }}
+          </v-col>
+
           <v-col cols="12" sm="6">
             <strong>Date of Birth:</strong> {{ formattedDOB }}
           </v-col>
@@ -51,7 +56,7 @@ const user = ref<User | undefined>(commonStore.user)
 
 const formattedDOB = computed(() => {
   if (!user.value) return
-  
+
   const date = new Date(user.value.dob)
   return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
 })
