@@ -51,9 +51,10 @@
 
                 <v-col cols="12" md="6">
                   <v-text-field clearable v-model="confirmPassword" label="Confirm Password" prepend-icon="mdi-lock"
-                    :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showConfirmPassword ? 'text' : 'password'"
-                    hint="At least 8 characters" counter @click:append="showConfirmPassword = !showConfirmPassword"
-                    variant="solo-filled" autocomplete="off" />
+                    :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    :type="showConfirmPassword ? 'text' : 'password'" hint="At least 8 characters" counter
+                    @click:append="showConfirmPassword = !showConfirmPassword" variant="solo-filled"
+                    autocomplete="off" />
                 </v-col>
 
                 <v-col cols="12">
@@ -77,13 +78,13 @@
 </template>
 
 <script setup lang="ts">
-import PfsCard from '@/components/UI/PfsCard.vue'
+import PfsCard from '@/components/UI/PfsCard.vue';
 import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
-import { useRedirect } from '@/utils/redirect'
-import { computed, ref } from 'vue'
+import { useRedirect } from '@/utils/redirect';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { VDateInput } from 'vuetify/labs/VDateInput'
+import { VDateInput } from 'vuetify/labs/VDateInput';
 
 const route = useRoute();
 const { redirect } = useRedirect();
@@ -114,8 +115,14 @@ const disableRegister = computed(() => Object.values(registrationData.value).som
 
 const handleRegister = async () => {
   isLoading.value = true;
+
+  const user = {
+    ...registrationData.value,
+    dob: registrationData.value.dob?.split("T")[0]
+  }
+
   try {
-    await registerUser(registrationData.value)
+    await registerUser(user)
     const redirectPath = (route.query?.redirect as string) || '/';
     commonStore.addToast({
       message: 'Registered successfully!',
