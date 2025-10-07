@@ -1,9 +1,9 @@
 <template>
   <v-container class="pa-4" fluid>
-    <PfsCard elevation="3" class="mx-auto my-8" :loading="isLoading">
+    <PfsCard class="mx-auto my-8" :loading="isLoading">
       <v-card-title>
         <v-icon class="mr-2">mdi-account-circle</v-icon>
-        <span class="text-h6 font-weight-bold">User Profile</span>
+        <span class="text-h6 font-weight-bold">My Profile</span>
       </v-card-title>
 
       <v-divider></v-divider>
@@ -35,42 +35,71 @@
         </v-row>
       </v-card-text>
 
-      <v-card-actions>
+      <v-card-actions v-if="user">
         <v-btn color="primary" @click="editProfile">
           <v-icon left>mdi-pencil</v-icon> Edit Profile
         </v-btn>
       </v-card-actions>
     </PfsCard>
+
+    <PfsDialog :is-open="isEditing" dialogTitle="Edit my profile" primaryButtonType="success"
+      @cancel="isEditing = false" @submit="handleSubmit">
+      <EditUser v-if="editableUser" :user="editableUser" @update="handleUpdateUser" />
+    </PfsDialog>
   </v-container>
 </template>
 
 <script setup lang="ts">
+import EditUser from '@/components/feature/EditUser.vue'
 import PfsCard from '@/components/UI/PfsCard.vue'
+import PfsDialog from '@/components/UI/PfsDialog.vue'
 import { useUsers } from '@/services/userService'
 import type { User } from '@/types/auth'
+import { useDateUtil } from '@/utils/date'
 import { ref, computed, onMounted } from 'vue'
+import { MonthFormat } from '../types/common'
 
-const { getUser } = useUsers()
+const { getUser, updateUser } = useUsers()
+const { localeDateString } = useDateUtil()
 
 const user = ref<User | undefined>()
+const editableUser = ref<User | undefined>()
 const isLoading = ref(true)
+const isEditing = ref(false)
 
 const formattedDOB = computed(() => {
   if (!user.value) return
 
-  const date = new Date(user.value.dob)
-  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+  return localeDateString(user.value.dob, MonthFormat.LONG)
 })
 
-function editProfile() {
-  // Redirect to edit page or open dialog
-  console.log('Edit profile clicked')
+const editProfile = async () => {
+  editableUser.value = JSON.parse(JSON.stringify(user.value))
+  isEditing.value = true
+}
+
+const handleUpdateUser = (updUser: User) => {
+  editableUser.value = updUser
+}
+
+const handleSubmit = async () => {
+  if (!editableUser.value) return
+
+  isLoading.value = true
+  user.value = await updateUser(editableUser.value)
+  await loadData()
+  isEditing.value = false
+}
+
+const loadData = async () => {
+  isLoading.value = true
+  user.value = await getUser()
+  editableUser.value = JSON.parse(JSON.stringify(user.value))
+  isLoading.value = false
 }
 
 onMounted(async () => {
-  isLoading.value = true
-  user.value = await getUser()
-  isLoading.value = false
+  await loadData()
 })
 </script>
 

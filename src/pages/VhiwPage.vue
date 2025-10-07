@@ -1,8 +1,7 @@
 <template>
   <PfsCard :loading="loading">
     <v-container>
-      <v-data-table v-if="!loading" :items="salesLog" :headers="headers" :search="search" :sort-by="sortBy"
-        class="data-table">
+      <v-data-table v-if="!loading" :items="salesLog" :headers="headers" :search="search" class="data-table">
         <template #top>
           <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details
             single-line>
@@ -18,12 +17,10 @@ import PfsCard from '@/components/UI/PfsCard.vue'
 import { useSalesService, type SalesLog } from '@/services/salesService'
 import type { TableHeader } from '@/types/common'
 import { onMounted, ref } from 'vue'
-import type { SortItem } from 'vuetify/lib/components/VDataTable/composables/sort.mjs'
 
 const salesLog = ref<SalesLog[]>([])
 const headers = ref<TableHeader[]>([])
 const search = ref('')
-const sortBy = ref([{ key: 'date', order: 'asc' } as SortItem])
 const loading = ref(false)
 
 onMounted(async () => {

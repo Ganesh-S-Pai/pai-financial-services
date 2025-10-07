@@ -36,7 +36,7 @@
 
                 <v-col cols="12" md="6">
                   <v-date-input clearable v-model="registrationData.dob" label="Date of birth"
-                    prepend-icon="mdi-calendar-range" variant="solo-filled" :max="maxDate" autocomplete="off"
+                    prepend-icon="mdi-calendar-range" variant="solo-filled" :max="yesterday" autocomplete="off"
                     :rules="[required]" />
                 </v-col>
 
@@ -85,6 +85,7 @@
 import PfsCard from '@/components/UI/PfsCard.vue';
 import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
+import { useDateUtil } from '@/utils/date';
 import { useFormUtils } from '@/utils/form';
 import { useRedirect } from '@/utils/redirect';
 import { computed, ref } from 'vue';
@@ -92,14 +93,11 @@ import { useRoute } from 'vue-router';
 import { VDateInput } from 'vuetify/labs/VDateInput';
 
 const route = useRoute();
+const commonStore = useCommonStore();
 const { redirect } = useRedirect();
 const { registerUser } = useAuthentication()
 const { required } = useFormUtils()
-const commonStore = useCommonStore();
-
-const yesterday = new Date()
-yesterday.setDate(yesterday.getDate() - 1)
-const maxDate = yesterday.toISOString().split('T')[0]
+const { yesterday } = useDateUtil()
 
 const isLoading = ref(false)
 const showPassword = ref(false)

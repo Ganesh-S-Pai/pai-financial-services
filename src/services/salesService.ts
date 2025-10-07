@@ -1,4 +1,4 @@
-import { localeDateString } from "@/utils/date"
+import { useDateUtil } from "@/utils/date"
 import { useAuthentication } from "./authService"
 import { apiGateway } from "@/utils/apiGateway"
 
@@ -15,6 +15,7 @@ export interface SalesLog {
 export const useSalesService = () => {
   const { getAuthToken } = useAuthentication()
   const { get } = apiGateway()
+  const { localeDateString } = useDateUtil()
 
   const getSalesLog = async (): Promise<SalesLog[]> => {
     const endpoint = '/vhiw/sales-logs'
