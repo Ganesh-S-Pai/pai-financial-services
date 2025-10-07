@@ -1,9 +1,23 @@
 <template>
-    <div class="justify-center">
-        <iframe :src="link" width="700" height="1800" frameborder="0" scrolling="no"></iframe>
-    </div>
+    <PfsCard>
+        <div v-if="isLoading" class="d-flex flex-column align-center mt-16 mb-16">
+            <v-progress-circular size="70" width="7" color="purple-darken-4" indeterminate />
+        </div>
+
+        <div class="d-flex flex-column align-center">
+            <iframe :src="link" width="750" height="1950" frameborder="0" scrolling="no" @load="onIframeLoad"></iframe>
+        </div>
+    </PfsCard>
 </template>
 
 <script setup lang="ts">
-const link = "https://1drv.ms/b/c/13d6f69d8fba167c/IQQAKNT6XI97TJR9M7pvzm6NAePxPAoo8Wi5oX-29RGSEu4"
+import PfsCard from '@/components/UI/PfsCard.vue'
+import { ref } from 'vue'
+
+const link = import.meta.env.VITE_RESUME_URL
+const isLoading = ref(true)
+
+const onIframeLoad = () => {
+    isLoading.value = false
+}
 </script>

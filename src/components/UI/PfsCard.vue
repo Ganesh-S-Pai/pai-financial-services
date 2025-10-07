@@ -4,7 +4,7 @@
       <slot />
     </div>
     <div v-else class="d-flex flex-column align-center justify-center mt-16 mb-16">
-      <v-progress-circular indeterminate class="p-4 m-6" color="primary" size="48" />
+      <v-progress-circular indeterminate class="p-4 m-6" color="purple-darken-4" size="60" width="6" />
     </div>
   </v-card>
 </template>
