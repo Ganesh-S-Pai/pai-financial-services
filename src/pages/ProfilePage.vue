@@ -58,7 +58,9 @@ import type { User } from '@/types/auth'
 import { useDateUtil } from '@/utils/date'
 import { ref, computed, onMounted } from 'vue'
 import { MonthFormat } from '../types/common'
+import { useCommonStore } from '@/stores/common'
 
+const commonStore = useCommonStore()
 const { getUser, updateUser } = useUsers()
 const { localeDateString } = useDateUtil()
 
@@ -90,6 +92,11 @@ const handleSubmit = async () => {
   isLoading.value = true
   user.value = await updateUser(editableUser.value)
   await loadData()
+  
+  commonStore.addToast({
+    message: 'Profile updated successfully!',
+    color: 'success'
+  })
   isEditing.value = false
 }
 

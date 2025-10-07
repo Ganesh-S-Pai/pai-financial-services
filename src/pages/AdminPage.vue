@@ -10,12 +10,10 @@
                     </template>
 
                     <template #item.actions="{ item }">
-                        <div class="d-flex ga-2 justify-end">
-                            <v-icon color="medium-emphasis" icon="mdi-pencil" size="small"
-                                @click="editUser(item)"></v-icon>
+                        <div class="d-flex ga-4">
+                            <v-icon color="info" icon="mdi-pencil" size="small" @click="editUser(item)"></v-icon>
 
-                            <v-icon color="medium-emphasis" icon="mdi-delete" size="small"
-                                @click="delUser(item)"></v-icon>
+                            <v-icon color="error" icon="mdi-delete" size="small" @click="delUser(item)"></v-icon>
                         </div>
                     </template>
                 </v-data-table>
@@ -27,8 +25,8 @@
             <EditUser v-if="editableUser" :user="editableUser" @update="handleUpdateUser" />
         </PfsDialog>
 
-        <PfsDialog :is-open="isDeleting" dialogTitle="Delete user" primaryButtonType="error" primaryButtonTitle="Delete" secondaryButtonType="warning"
-            @cancel="isDeleting = false"
+        <PfsDialog :is-open="isDeleting" dialogTitle="Delete user" primaryButtonType="error" primaryButtonTitle="Delete"
+            secondaryButtonType="warning" @cancel="isDeleting = false"
             :dialogContent="`Are you sure you want to delete ${deletableUser?.first_name} ${deletableUser?.last_name}?`"
             @submit="handleDelete" />
     </v-container>
@@ -61,7 +59,7 @@ const editableUser = ref<User | undefined>()
 const deletableUser = ref<User | undefined>()
 
 const editUser = (user: User) => {
-    editableUser.value = user
+    editableUser.value = JSON.parse(JSON.stringify(user))
     isEditing.value = true
 }
 
@@ -84,6 +82,10 @@ const handleUpdate = async () => {
     })
     await loadUsers()
 
+    commonStore.addToast({
+        message: 'User updated successfully!',
+        color: 'success'
+    });
     isEditing.value = false
     isLoading.value = false
 }
@@ -103,6 +105,10 @@ const handleDelete = async () => {
     await deleteUser(deletableUser.value.id)
     await loadUsers()
 
+    commonStore.addToast({
+        message: 'User deleted successfully!',
+        color: 'success'
+    });
     isDeleting.value = false
     isLoading.value = false
 }
@@ -117,10 +123,7 @@ const loadUsers = async () => {
     }))
 }
 
-onMounted(async () => {
-    isLoading.value = true
-    await loadUsers()
-
+const loadHeaders = () => {
     headers.value = Object.keys(users.value[0] || {})
         .filter((key) => !['id'].includes(key))
         .map((key) => ({
@@ -128,6 +131,12 @@ onMounted(async () => {
             value: key,
             key
         })).concat({ title: 'Actions', value: 'actions', key: 'actions' })
+}
+
+onMounted(async () => {
+    isLoading.value = true
+    await loadUsers()
+    loadHeaders()
     isLoading.value = false
 })
 </script>

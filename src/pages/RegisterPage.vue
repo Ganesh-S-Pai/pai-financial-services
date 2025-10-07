@@ -103,7 +103,7 @@ const isLoading = ref(false)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
-const registrationData = ref({
+const initialData = {
   first_name: '',
   last_name: '',
   phone: '',
@@ -111,8 +111,8 @@ const registrationData = ref({
   gender: '',
   email: '',
   password: ''
-})
-
+}
+const registrationData = ref(initialData)
 const confirmPassword = ref('')
 
 const disableRegister = computed(() => Object.values(registrationData.value).some(value => value === "") || confirmPassword.value === "")
@@ -122,7 +122,7 @@ const handleRegister = async () => {
 
   const user = {
     ...registrationData.value,
-    dob: registrationData.value.dob.split("T")[0] as string
+    dob: new Date(registrationData.value.dob).toISOString().split("T")[0] as string
   }
 
   try {
@@ -132,6 +132,7 @@ const handleRegister = async () => {
       message: 'Registered successfully!',
       color: 'success'
     });
+    registrationData.value = initialData
 
     await redirect(redirectPath)
     isLoading.value = false;
