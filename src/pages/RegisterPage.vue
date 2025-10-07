@@ -85,6 +85,7 @@
 import PfsCard from '@/components/UI/PfsCard.vue';
 import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
+import { useFormUtils } from '@/utils/form';
 import { useRedirect } from '@/utils/redirect';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -93,6 +94,7 @@ import { VDateInput } from 'vuetify/labs/VDateInput';
 const route = useRoute();
 const { redirect } = useRedirect();
 const { registerUser } = useAuthentication()
+const { required } = useFormUtils()
 const commonStore = useCommonStore();
 
 const yesterday = new Date()
@@ -116,10 +118,6 @@ const registrationData = ref({
 const confirmPassword = ref('')
 
 const disableRegister = computed(() => Object.values(registrationData.value).some(value => value === "") || confirmPassword.value === "")
-
-function required(v) {
-  return !!v || 'Field is required'
-}
 
 const handleRegister = async () => {
   isLoading.value = true;

@@ -30,6 +30,7 @@
 import PfsCard from '@/components/UI/PfsCard.vue';
 import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
+import { useFormUtils } from '@/utils/form';
 import { useRedirect } from '@/utils/redirect';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -40,16 +41,14 @@ const { redirect } = useRedirect();
 const commonStore = useCommonStore();
 const { authenticateUser, logoutUser } = useAuthentication();
 
+const { required } = useFormUtils()
+
 const email = ref('');
 const password = ref('');
 const showPassword = ref(false)
 const isLoading = ref(false)
 
 const disableLogin = computed(() => email.value === '' || password.value?.length < 8);
-
-function required(v) {
-  return !!v || 'Field is required'
-}
 
 const handleLogin = async () => {
   isLoading.value = true;
