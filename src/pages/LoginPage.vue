@@ -6,12 +6,12 @@
 
       <v-form @submit.prevent="handleLogin">
         <v-text-field clearable v-model="email" type="email" label="Email" prepend-icon="mdi-account"
-          variant="solo-filled" width="300"></v-text-field>
+          variant="solo-filled" width="300" :rules="[required]" />
 
         <v-text-field clearable v-model="password" label="Password" prepend-icon="mdi-lock"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'"
           hint="At least 8 characters" name="input-10-1" counter @click:append="showPassword = !showPassword"
-          variant="solo-filled" width="340" autocomplete="on"></v-text-field>
+          variant="solo-filled" width="340" autocomplete="on" :rules="[required]" />
 
         <v-btn class="mb-8 mt-4" type="submit" color="success" size="large" variant="elevated" block
           :disabled="disableLogin">
@@ -47,6 +47,10 @@ const isLoading = ref(false)
 
 const disableLogin = computed(() => email.value === '' || password.value?.length < 8);
 
+function required(v) {
+  return !!v || 'Field is required'
+}
+
 const handleLogin = async () => {
   isLoading.value = true;
   try {
@@ -58,7 +62,6 @@ const handleLogin = async () => {
     });
 
     await redirect(redirectPath)
-    isLoading.value = false;
   }
   catch (error) {
     commonStore.addToast({

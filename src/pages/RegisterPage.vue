@@ -13,48 +13,52 @@
               <v-row dense>
                 <v-col cols="12" md="6">
                   <v-text-field clearable v-model="registrationData.first_name" type="text" label="First Name"
-                    prepend-icon="mdi-card-account-details" variant="solo-filled" autocomplete="off" />
+                    prepend-icon="mdi-card-account-details" variant="solo-filled" autocomplete="off"
+                    :rules="[required]" />
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-text-field clearable v-model="registrationData.last_name" type="text" label="Last Name"
-                    prepend-icon="mdi-card-account-details-outline" variant="solo-filled" autocomplete="off" />
+                    prepend-icon="mdi-card-account-details-outline" variant="solo-filled" autocomplete="off"
+                    :rules="[required]" />
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-text-field clearable v-model="registrationData.email" type="text" label="Email"
-                    prepend-icon="mdi-email" variant="solo-filled" autocomplete="off" />
+                    prepend-icon="mdi-email" variant="solo-filled" autocomplete="off" :rules="[required]" />
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-text-field clearable v-model="registrationData.phone" type="number" label="Phone"
-                    prepend-icon="mdi-phone" variant="solo-filled" :maxlength="10" autocomplete="off" />
+                    prepend-icon="mdi-phone" variant="solo-filled" :maxlength="10" autocomplete="off"
+                    :rules="[required]" />
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-date-input clearable v-model="registrationData.dob" label="Date of birth"
-                    prepend-icon="mdi-calendar-range" variant="solo-filled" :max="maxDate" autocomplete="off" />
+                    prepend-icon="mdi-calendar-range" variant="solo-filled" :max="maxDate" autocomplete="off"
+                    :rules="[required]" />
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-select clearable label="Gender" v-model="registrationData.gender"
                     :items="['Male', 'Female', 'Other', 'Prefer not to say']" prepend-icon="mdi-gender-male-female"
-                    variant="solo-filled" autocomplete="off" />
+                    variant="solo-filled" autocomplete="off" :rules="[required]" />
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-text-field clearable v-model="registrationData.password" label="Password" prepend-icon="mdi-lock"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'"
                     hint="At least 8 characters" counter @click:append="showPassword = !showPassword"
-                    variant="solo-filled" autocomplete="off" />
+                    variant="solo-filled" autocomplete="off" :rules="[required]" />
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-text-field clearable v-model="confirmPassword" label="Confirm Password" prepend-icon="mdi-lock"
                     :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="showConfirmPassword ? 'text' : 'password'" hint="At least 8 characters" counter
-                    @click:append="showConfirmPassword = !showConfirmPassword" variant="solo-filled"
-                    autocomplete="off" />
+                    @click:append="showConfirmPassword = !showConfirmPassword" variant="solo-filled" autocomplete="off"
+                    :rules="[required]" />
                 </v-col>
 
                 <v-col cols="12">
@@ -112,6 +116,10 @@ const registrationData = ref({
 const confirmPassword = ref('')
 
 const disableRegister = computed(() => Object.values(registrationData.value).some(value => value === "") || confirmPassword.value === "")
+
+function required(v) {
+  return !!v || 'Field is required'
+}
 
 const handleRegister = async () => {
   isLoading.value = true;
