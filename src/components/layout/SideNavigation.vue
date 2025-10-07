@@ -1,8 +1,10 @@
 <template>
-  <v-navigation-drawer app v-model="showDrawer" image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
+  <v-navigation-drawer app v-model="showDrawer" elevation="5" image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
     :permanent="!isMobile" @update:modelValue="onDrawerChange">
-    <v-list-item dense base-color="white" title="Van Heusen" prepend-icon="mdi-tshirt-crew" class="mt-2"
-      @click="navigateTo('/vhiw')" :active="isCurrentRoute('/vhiw')" />
+    <v-list-item dense base-color="white" title="Admin" prepend-icon="mdi-shield-crown" class="mt-2"
+      @click="navigateTo('/admin')" :active="isCurrentRoute('/admin')" />
+    <v-list-item dense base-color="white" title="Van Heusen" prepend-icon="mdi-tshirt-crew" @click="navigateTo('/vhiw')"
+      :active="isCurrentRoute('/vhiw')" />
     <v-list-item dense base-color="white" title="Malt House" prepend-icon="mdi-taxi" @click="navigateTo('/malt')"
       :active="isCurrentRoute('/malt')" />
 

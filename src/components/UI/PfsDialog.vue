@@ -23,7 +23,9 @@
 
                 <div class="scrollable-content" v-else>
                     <slot>
-                        {{ dialogContent }}
+                        <div class="text-center">
+                            {{ dialogContent }}
+                        </div>
                     </slot>
                 </div>
             </v-card-text>

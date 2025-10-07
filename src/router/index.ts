@@ -11,6 +11,12 @@ const router = createRouter({
     redirect: '/vhiw',
     children: [
       {
+        path: '/admin',
+        name: 'Admin',
+        component: () => import('@/pages/AdminPage.vue'),
+        meta: { login: true },
+      },
+      {
         path: '/profile',
         name: 'Profile',
         component: () => import('@/pages/ProfilePage.vue'),

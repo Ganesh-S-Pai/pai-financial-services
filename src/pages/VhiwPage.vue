@@ -1,7 +1,7 @@
 <template>
-  <PfsCard :loading="loading">
+  <PfsCard :loading="isLoading">
     <v-container>
-      <v-data-table v-if="!loading" :items="salesLog" :headers="headers" :search="search" class="data-table">
+      <v-data-table v-if="!isLoading" :items="salesLog" :headers="headers" :search="search">
         <template #top>
           <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details
             single-line>
@@ -18,15 +18,15 @@ import { useSalesService, type SalesLog } from '@/services/salesService'
 import type { TableHeader } from '@/types/common'
 import { onMounted, ref } from 'vue'
 
+const { getSalesLog } = useSalesService()
+
 const salesLog = ref<SalesLog[]>([])
 const headers = ref<TableHeader[]>([])
 const search = ref('')
-const loading = ref(false)
+const isLoading = ref(false)
 
 onMounted(async () => {
-  loading.value = true
-
-  const { getSalesLog } = useSalesService()
+  isLoading.value = true
   salesLog.value = await getSalesLog()
 
   headers.value = Object.keys(salesLog.value[0] || {})
@@ -34,13 +34,10 @@ onMounted(async () => {
     .map((key) => ({
       title: key.charAt(0).toUpperCase() + key.slice(1),
       value: key,
+      key
     }))
-  loading.value = false
+  isLoading.value = false
 })
 </script>
 
-<style scoped>
-.data-table {
-  border: solid 1px #ccc;
-}
-</style>
+<style scoped></style>

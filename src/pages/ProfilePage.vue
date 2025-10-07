@@ -43,7 +43,7 @@
     </PfsCard>
 
     <PfsDialog :is-open="isEditing" dialogTitle="Edit my profile" primaryButtonType="success"
-      @cancel="isEditing = false" @submit="handleSubmit">
+      :disable-primary-button="disableSubmit" @cancel="isEditing = false" @submit="handleSubmit">
       <EditUser v-if="editableUser" :user="editableUser" @update="handleUpdateUser" />
     </PfsDialog>
   </v-container>
@@ -72,6 +72,8 @@ const formattedDOB = computed(() => {
 
   return localeDateString(user.value.dob, MonthFormat.LONG)
 })
+
+const disableSubmit = computed(() => user.value === editableUser.value)
 
 const editProfile = async () => {
   editableUser.value = JSON.parse(JSON.stringify(user.value))
