@@ -17,6 +17,12 @@ const router = createRouter({
         meta: { login: true },
       },
       {
+        path: '/about',
+        name: 'About',
+        component: () => import('@/pages/AboutPage.vue'),
+        meta: { login: true },
+      },
+      {
         path: '/vhiw',
         name: 'Van Heusen',
         component: () => import('@/pages/VhiwPage.vue'),

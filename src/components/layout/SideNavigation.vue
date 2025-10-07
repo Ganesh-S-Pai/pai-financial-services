@@ -13,6 +13,8 @@
         <div v-if="toggleSettings" class="expand-up">
           <v-list-item dense base-color="white" title="Profile" prepend-icon="mdi-account"
             @click="navigateTo('/profile')" :active="isCurrentRoute('/profile')" />
+          <v-list-item dense base-color="white" title="About" prepend-icon="mdi-file-account"
+            @click="navigateTo('/about')" :active="isCurrentRoute('/about')" />
           <v-list-item dense base-color="white" title="Logout" prepend-icon="mdi-logout" @click="handleLogout" />
         </div>
       </v-expand-transition>

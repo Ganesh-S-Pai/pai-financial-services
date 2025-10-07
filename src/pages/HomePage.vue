@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="application-wrapper">
     <SideNavigation />
     <router-view v-slot="{ Component }">
       <transition mode="out-in" enter-active-class="transition-opacity duration-1000" enter-from-class="opacity-0"
