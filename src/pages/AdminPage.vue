@@ -2,7 +2,8 @@
     <v-container>
         <PfsCard :loading="isLoading">
             <v-container>
-                <v-data-table v-if="!isLoading" :items="users" :headers="headers" :search="search">
+                <v-data-table v-if="!isLoading" :items="users" :headers="headers" :search="search"
+                    @click:row="handleRowClick">
                     <template #top>
                         <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
                             variant="outlined" hide-details single-line>
@@ -11,9 +12,9 @@
 
                     <template #item.actions="{ item }">
                         <div class="d-flex ga-4">
-                            <v-icon color="info" icon="mdi-pencil" size="small" @click="editUser(item)"></v-icon>
+                            <v-icon color="warning" icon="mdi-pencil" size="large" @click.stop="editUser(item)"></v-icon>
 
-                            <v-icon color="error" icon="mdi-delete" size="small" @click="delUser(item)"></v-icon>
+                            <v-icon color="error" icon="mdi-delete" size="large" @click.stop="delUser(item)"></v-icon>
                         </div>
                     </template>
                 </v-data-table>
@@ -42,10 +43,12 @@ import { useCommonStore } from '@/stores/common';
 import type { User } from '@/types/auth';
 import type { TableHeader } from '@/types/common';
 import { useDateUtil } from '@/utils/date';
+import { useRedirect } from '@/utils/redirect';
 import { onMounted, ref } from 'vue';
 
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
+const { redirect } = useRedirect()
 const { getUsers, updateUser, deleteUser } = useUsers()
 const { localeDateString } = useDateUtil()
 
@@ -111,6 +114,10 @@ const handleDelete = async () => {
     });
     isDeleting.value = false
     isLoading.value = false
+}
+
+const handleRowClick = (_event: Event, row: { item: User }) => {
+    redirect(`/profile?id=${row.item.id}`)
 }
 
 const loadUsers = async () => {

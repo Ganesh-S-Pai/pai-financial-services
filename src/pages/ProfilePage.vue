@@ -3,7 +3,7 @@
     <PfsCard class="mx-auto my-8" :loading="isLoading">
       <v-card-title>
         <v-icon class="mr-2">mdi-account-circle</v-icon>
-        <span class="text-h6 font-weight-bold">My Profile</span>
+        <span class="text-h6 font-weight-bold">{{ isMyProfile ? 'My' : 'User'}} Profile</span>
       </v-card-title>
 
       <v-divider></v-divider>
@@ -42,7 +42,7 @@
       </v-card-actions>
     </PfsCard>
 
-    <PfsDialog :is-open="isEditing" dialogTitle="Edit my profile" primaryButtonType="success"
+    <PfsDialog :is-open="isEditing" :dialogTitle="`Edit ${isMyProfile ? 'my' : 'user'} profile`" primaryButtonType="success"
       :disable-primary-button="disableSubmit" @cancel="isEditing = false" @submit="handleSubmit">
       <EditUser v-if="editableUser" :user="editableUser" @update="handleUpdateUser" />
     </PfsDialog>
@@ -59,8 +59,12 @@ import { useDateUtil } from '@/utils/date'
 import { ref, computed, onMounted } from 'vue'
 import { MonthFormat } from '../types/common'
 import { useCommonStore } from '@/stores/common'
+import { useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const commonStore = useCommonStore()
+const authStore = useAuthStore()
+const route = useRoute()
 const { getUser, updateUser } = useUsers()
 const { localeDateString } = useDateUtil()
 
@@ -68,6 +72,7 @@ const user = ref<User | undefined>()
 const editableUser = ref<User | undefined>()
 const isLoading = ref(true)
 const isEditing = ref(false)
+const queryId = route.query.id?.toString()
 
 const formattedDOB = computed(() => {
   if (!user.value) return
@@ -76,6 +81,8 @@ const formattedDOB = computed(() => {
 })
 
 const disableSubmit = computed(() => user.value === editableUser.value)
+
+const isMyProfile = computed(() => queryId ? queryId === authStore.userId : true)
 
 const editProfile = async () => {
   editableUser.value = JSON.parse(JSON.stringify(user.value))
@@ -92,7 +99,7 @@ const handleSubmit = async () => {
   isLoading.value = true
   user.value = await updateUser(editableUser.value)
   await loadData()
-  
+
   commonStore.addToast({
     message: 'Profile updated successfully!',
     color: 'success'
@@ -102,7 +109,7 @@ const handleSubmit = async () => {
 
 const loadData = async () => {
   isLoading.value = true
-  user.value = await getUser()
+  user.value = queryId ? await getUser(queryId) : await getUser()
   editableUser.value = JSON.parse(JSON.stringify(user.value))
   isLoading.value = false
 }

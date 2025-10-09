@@ -2,7 +2,7 @@
   <v-container>
     <PfsCard :loading="isLoading">
       <v-container>
-        <v-data-table v-if="!isLoading" :items="salesLog" :headers="headers" :search="search">
+        <v-data-table v-if="!isLoading" :items="salesLog" :headers="headers" :search="search" :sort-by="sortBy">
           <template #top>
             <v-toolbar flat>
               <v-toolbar-title>
@@ -18,8 +18,8 @@
                 variant="elevated" border @click="addSalesLog" />
             </v-toolbar>
           </template>
-          <template #item.actions="{ item }">
-            <v-btn color="warning" text="Edit" size="small" @click="editSalesLog(item)" />
+          <template #item.actions="{ item }" >
+            <v-btn v-if="isLastItem(item)" color="warning" text="Edit" size="small" @click="editSalesLog(item)" />
           </template>
         </v-data-table>
       </v-container>
@@ -29,10 +29,10 @@
       @submit="handleUpdate">
       <EditSalesLog v-if="editableSalesLog" :salesLog="editableSalesLog" @update="handleUpdateSalesLog" />
     </PfsDialog>
-    
+
     <PfsDialog :is-open="isAdding" dialogTitle="Add new log" primaryButtonType="success" @cancel="isAdding = false"
       @submit="handleCreate">
-      <AddSalesLog @update="handleCreateSalesLog" />
+      <AddSalesLog :allowed-dates="[allowedDate]" @update="handleCreateSalesLog" />
     </PfsDialog>
   </v-container>
 </template>
@@ -46,9 +46,12 @@ import { useSalesService, type SalesLog } from '@/services/salesService'
 import { useCommonStore } from '@/stores/common'
 import type { TableHeader } from '@/types/common'
 import { onMounted, ref } from 'vue'
+import type { SortItem } from 'vuetify/lib/components/VDataTable/composables/sort.mjs'
 
 const { getSalesLog, updateSalesLog, createSalesLog } = useSalesService()
 const commonStore = useCommonStore()
+
+const sortBy = [{ key: 'created_at', order: 'desc' } as SortItem]
 
 const salesLog = ref<SalesLog[]>([])
 const headers = ref<TableHeader[]>([])
@@ -58,6 +61,7 @@ const isEditing = ref(false)
 const editableSalesLog = ref<SalesLog | undefined>()
 const isAdding = ref(false)
 const newSalesLog = ref<SalesLog | undefined>()
+const allowedDate = ref(new Date())
 
 const editSalesLog = (salesLog: SalesLog) => {
   editableSalesLog.value = JSON.parse(JSON.stringify(salesLog))
@@ -102,14 +106,17 @@ const handleCreate = async () => {
   if (!newSalesLog.value) return
 
   isLoading.value = true
+
+  const date = new Date(newSalesLog.value.date)
+  date.setHours(11, 30, 0, 0); 
+
   await createSalesLog({
     ...newSalesLog.value,
-    opening: +newSalesLog.value.opening,
     inward: +newSalesLog.value.inward,
     outward: +newSalesLog.value.outward,
     sales: +newSalesLog.value.sales,
     system: +newSalesLog.value.system,
-    date: new Date(newSalesLog.value.date).toISOString()
+    date: date.toISOString()
   })
   await loadSalesLogs()
 
@@ -122,7 +129,18 @@ const handleCreate = async () => {
 }
 
 const loadSalesLogs = async () => {
-  salesLog.value = await getSalesLog()
+  salesLog.value = (await getSalesLog()) || []
+
+  const lastLog = salesLog.value[salesLog.value.length - 1]
+  if (lastLog?.date) {
+    const date = new Date(lastLog.date)
+    date.setDate(date.getDate() + 1)
+    allowedDate.value = date
+  }
+}
+
+const isLastItem = (log: SalesLog) => {
+  return salesLog.value[salesLog.value.length - 1]?.id === log.id
 }
 
 onMounted(async () => {

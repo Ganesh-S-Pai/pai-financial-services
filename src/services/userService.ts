@@ -11,7 +11,6 @@ export const useUsers = () => {
 
     const userId = authStore.userId
     const baseEndpoint = '/admin/users'
-    const endpoint = `${baseEndpoint}/${userId}`
 
     const getUsers = async () => {
         try {
@@ -34,7 +33,10 @@ export const useUsers = () => {
         }
     }
 
-    const getUser = async () => {
+    const getUser = async (userIdentity?: string) => {
+        const id = userIdentity ?? userId
+        const endpoint = `${baseEndpoint}/${id}`
+
         try {
             const response = await get(endpoint, {
                 headers: {
@@ -57,9 +59,9 @@ export const useUsers = () => {
 
     const updateUser = async (updatedUser: User) => {
         try {
-            let url = endpoint
+            let url = baseEndpoint
             if (updatedUser.id) {
-                url = baseEndpoint + "/" + updatedUser.id
+                url += "/" + updatedUser.id
             }
 
             const response = await put(url, updatedUser, {
@@ -83,9 +85,9 @@ export const useUsers = () => {
 
     const deleteUser = async (userId: string) => {
         try {
-            let url = endpoint
+            let url = baseEndpoint
             if (userId) {
-                url = baseEndpoint + "/" + userId
+                url += "/" + userId
             }
 
             const response = await del(url, {
