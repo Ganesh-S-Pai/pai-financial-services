@@ -8,18 +8,13 @@ export const useDateUtil = () => {
         return today.toISOString().split('T')[0]
     })
 
-    const age = (dateOfBirth: Date | string) => {
-        const today = new Date();
-        const birthDate = new Date(dateOfBirth);
+    const age = (birthDate: Date | string) => {
+        const today = new Date()
+        const dob = new Date(birthDate)
 
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDifference = today.getMonth() - birthDate.getMonth();
-
-        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-
-        return age;
+        return today.getFullYear() -
+            dob.getFullYear() -
+            (today < new Date(today.getFullYear(), dob.getMonth(), dob.getDate()) ? 1 : 0)
     }
 
     const localeDateString = (dateString?: string | Date, monthFormat: MonthFormat.LONG | MonthFormat.SHORT = MonthFormat.SHORT): string => {

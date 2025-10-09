@@ -18,7 +18,11 @@
                 variant="elevated" border @click="addSalesLog" />
             </v-toolbar>
           </template>
-          <template #item.actions="{ item }" >
+          <template #item.difference="{ value }">
+            <v-chip :border="`${getDifferenceColor(value)} thin opacity-25`" :color="getDifferenceColor(value)"
+              :text="value" size="small"></v-chip>
+          </template>
+          <template #item.actions="{ item }">
             <v-btn v-if="isLastItem(item)" color="warning" text="Edit" size="small" @click="editSalesLog(item)" />
           </template>
         </v-data-table>
@@ -26,13 +30,14 @@
     </PfsCard>
 
     <PfsDialog :is-open="isEditing" dialogTitle="Edit log" primaryButtonType="success" @cancel="isEditing = false"
-      @submit="handleUpdate">
-      <EditSalesLog v-if="editableSalesLog" :salesLog="editableSalesLog" @update="handleUpdateSalesLog" />
+      :disable-primary-button="disableSubmit()" @submit="handleUpdate">
+      <EditSalesLog v-if="editableSalesLog" :salesLog="editableSalesLog" @valid="handleEditSalesValid"
+        @update="handleUpdateSalesLog" />
     </PfsDialog>
 
     <PfsDialog :is-open="isAdding" dialogTitle="Add new log" primaryButtonType="success" @cancel="isAdding = false"
-      @submit="handleCreate">
-      <AddSalesLog :allowed-dates="[allowedDate]" @update="handleCreateSalesLog" />
+      :disable-primary-button="!isAddSalesLogValid" @submit="handleCreate">
+      <AddSalesLog :allowed-dates="[allowedDate]" @valid="handleAddSalesValid" @update="handleCreateSalesLog" />
     </PfsDialog>
   </v-container>
 </template>
@@ -62,6 +67,20 @@ const editableSalesLog = ref<SalesLog | undefined>()
 const isAdding = ref(false)
 const newSalesLog = ref<SalesLog | undefined>()
 const allowedDate = ref(new Date())
+const isEditSalesLogValid = ref(false)
+const isAddSalesLogValid = ref(false)
+
+const disableSubmit = () => JSON.stringify(editableSalesLog.value) === JSON.stringify(salesLog.value.find(item => item.id === editableSalesLog.value?.id)) || !isEditSalesLogValid.value
+
+const getDifferenceColor = (difference: number) => {
+  if (difference > 0) return 'error'
+  else if (difference < 0) return 'warning'
+  else return 'success'
+}
+
+const handleEditSalesValid = (valid: boolean) => {
+  isEditSalesLogValid.value = valid
+}
 
 const editSalesLog = (salesLog: SalesLog) => {
   editableSalesLog.value = JSON.parse(JSON.stringify(salesLog))
@@ -73,17 +92,17 @@ const handleUpdateSalesLog = (salesLog: SalesLog) => {
 }
 
 const handleUpdate = async () => {
-  if (!editableSalesLog.value) return
+  if (!editableSalesLog.value || disableSubmit()) return
 
   isLoading.value = true
-  await updateSalesLog({
-    ...editableSalesLog.value,
+  const date = new Date(`${editableSalesLog.value.date} 06:00:00 GMT+0530`)
+  await updateSalesLog(editableSalesLog.value.id, {
     inward: +editableSalesLog.value.inward,
     outward: +editableSalesLog.value.outward,
     sales: +editableSalesLog.value.sales,
     system: +editableSalesLog.value.system,
-    date: new Date(editableSalesLog.value.date).toISOString()
-  })
+    date: date.toISOString()
+  } as SalesLog)
   await loadSalesLogs()
 
   commonStore.addToast({
@@ -92,6 +111,10 @@ const handleUpdate = async () => {
   });
   isEditing.value = false
   isLoading.value = false
+}
+
+const handleAddSalesValid = (valid: boolean) => {
+  isAddSalesLogValid.value = valid
 }
 
 const addSalesLog = () => {
@@ -106,9 +129,8 @@ const handleCreate = async () => {
   if (!newSalesLog.value) return
 
   isLoading.value = true
-
   const date = new Date(newSalesLog.value.date)
-  date.setHours(11, 30, 0, 0); 
+  date.setHours(11, 30, 0, 0);
 
   await createSalesLog({
     ...newSalesLog.value,

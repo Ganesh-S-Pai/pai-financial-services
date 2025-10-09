@@ -3,7 +3,7 @@
     <PfsCard class="mx-auto my-8" :loading="isLoading">
       <v-card-title>
         <v-icon class="mr-2">mdi-account-circle</v-icon>
-        <span class="text-h6 font-weight-bold">{{ isMyProfile ? 'My' : 'User'}} Profile</span>
+        <span class="text-h6 font-weight-bold">{{ isMyProfile ? 'My' : 'User' }} Profile</span>
       </v-card-title>
 
       <v-divider></v-divider>
@@ -42,9 +42,10 @@
       </v-card-actions>
     </PfsCard>
 
-    <PfsDialog :is-open="isEditing" :dialogTitle="`Edit ${isMyProfile ? 'my' : 'user'} profile`" primaryButtonType="success"
-      :disable-primary-button="disableSubmit" @cancel="isEditing = false" @submit="handleSubmit">
-      <EditUser v-if="editableUser" :user="editableUser" @update="handleUpdateUser" />
+    <PfsDialog :is-open="isEditing" :dialogTitle="`Edit ${isMyProfile ? 'my' : 'user'} profile`"
+      primaryButtonType="success" :disable-primary-button="disableSubmit()" @cancel="isEditing = false"
+      @submit="handleSubmit">
+      <EditUser v-if="editableUser" :user="editableUser" @valid="handleEditValid" @update="handleUpdateUser" />
     </PfsDialog>
   </v-container>
 </template>
@@ -72,6 +73,7 @@ const user = ref<User | undefined>()
 const editableUser = ref<User | undefined>()
 const isLoading = ref(true)
 const isEditing = ref(false)
+const isEditUserValid = ref(false)
 const queryId = route.query.id?.toString()
 
 const formattedDOB = computed(() => {
@@ -80,9 +82,13 @@ const formattedDOB = computed(() => {
   return localeDateString(user.value.dob, MonthFormat.LONG)
 })
 
-const disableSubmit = computed(() => user.value === editableUser.value)
-
 const isMyProfile = computed(() => queryId ? queryId === authStore.userId : true)
+
+const disableSubmit = () => JSON.stringify(editableUser.value) === JSON.stringify(user.value) || !isEditUserValid.value
+
+const handleEditValid = (valid: boolean) => {
+  isEditUserValid.value = valid
+}
 
 const editProfile = async () => {
   editableUser.value = JSON.parse(JSON.stringify(user.value))
@@ -90,11 +96,11 @@ const editProfile = async () => {
 }
 
 const handleUpdateUser = (updUser: User) => {
-  editableUser.value = updUser
+  editableUser.value = { ...updUser, phone: updUser.phone?.toString() }
 }
 
 const handleSubmit = async () => {
-  if (!editableUser.value) return
+  if (!editableUser.value || disableSubmit()) return
 
   isLoading.value = true
   user.value = await updateUser(editableUser.value)

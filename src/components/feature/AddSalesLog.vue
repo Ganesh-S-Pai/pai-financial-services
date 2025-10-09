@@ -1,5 +1,5 @@
 <template>
-    <v-form>
+    <v-form v-model="isValid">
         <v-container class="pb-0">
             <v-row>
                 <v-col cols="12" md="10" offset-md="1">
@@ -16,13 +16,14 @@
                 </v-col>
             </v-row>
         </v-container>
-        <EditSalesLog v-if="editableSalesLog" :salesLog="editableSalesLog" @update="handleUpdateSalesLog" />
+        <EditSalesLog v-if="editableSalesLog" :salesLog="editableSalesLog" @valid="handleEditSalesValid"
+            @update="handleUpdateSalesLog" />
     </v-form>
 </template>
 
 <script setup lang="ts">
 import type { SalesLog } from '@/services/salesService';
-import { ref, watch } from 'vue';
+import { ref, watch, watchEffect } from 'vue';
 import EditSalesLog from './EditSalesLog.vue';
 import { useFormUtils } from '@/utils/form';
 import { VDateInput } from 'vuetify/labs/VDateInput';
@@ -37,14 +38,22 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-    update: [value: SalesLog]
+    update: [value: SalesLog],
+    valid: [value: boolean]
 }>()
 
+const isValid = ref(false)
 const editableSalesLog = ref<SalesLog>({ date: props.allowedDates[0]?.toString() ?? '' } as SalesLog)
+const isEditSalesLogValid = ref(false)
+
+const handleEditSalesValid = (valid: boolean) => {
+    isEditSalesLogValid.value = valid
+}
 
 const handleUpdateSalesLog = (salesLog: SalesLog) => {
     editableSalesLog.value = salesLog
 }
 
 watch(editableSalesLog, () => emit('update', editableSalesLog.value), { deep: true })
+watchEffect(() => emit('valid', isValid.value && isEditSalesLogValid.value))
 </script>

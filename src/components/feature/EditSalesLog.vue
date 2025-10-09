@@ -1,28 +1,28 @@
 <template>
-    <v-form>
+    <v-form v-model="isValid">
         <v-container>
             <v-row>
                 <v-col cols="12" md="10" offset-md="1">
                     <v-row dense>
                         <v-col cols="12" md="6">
-                            <v-text-field clearable v-model="editableLog.inward" type="number" label="Inward"
+                            <v-text-field clearable v-model.number="editableLog.inward" type="number" label="Inward"
                                 prepend-icon="mdi-arrow-down-bold-outline" variant="solo-filled" autocomplete="off"
                                 :rules="[required]" />
                         </v-col>
 
                         <v-col cols="12" md="6">
-                            <v-text-field clearable v-model="editableLog.outward" type="number" label="Outward"
+                            <v-text-field clearable v-model.number="editableLog.outward" type="number" label="Outward"
                                 prepend-icon="mdi-arrow-up-bold-outline" variant="solo-filled" autocomplete="off"
                                 :rules="[required]" />
                         </v-col>
 
                         <v-col cols="12" md="6">
-                            <v-text-field clearable v-model="editableLog.sales" type="number" label="Sales"
+                            <v-text-field clearable v-model.number="editableLog.sales" type="number" label="Sales"
                                 prepend-icon="mdi-sale" variant="solo-filled" autocomplete="off" :rules="[required]" />
                         </v-col>
 
                         <v-col cols="12" md="6">
-                            <v-text-field clearable v-model="editableLog.system" type="number" label="System"
+                            <v-text-field clearable v-model.number="editableLog.system" type="number" label="System"
                                 prepend-icon="mdi-desktop-classic" variant="solo-filled" autocomplete="off"
                                 :rules="[required]" />
                         </v-col>
@@ -48,10 +48,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-    update: [value: SalesLog]
+    update: [value: SalesLog],
+    valid: [value: boolean]
 }>()
 
+const isValid = ref(false)
 const editableLog = ref<SalesLog>(props.salesLog)
 
 watch(editableLog, () => emit('update', editableLog.value), { deep: true })
+watch(isValid, () => emit('valid', isValid.value))
 </script>

@@ -47,9 +47,9 @@ export const useSalesService = () => {
     }
   }
 
-  const updateSalesLog = async (salesLog: SalesLog) => {
+  const updateSalesLog = async (id: string, salesLog: SalesLog) => {
     try {
-      const url = endpoint + "/" + salesLog.id
+      const url = endpoint + "/" + id
 
       const response = await put(url, salesLog, {
         headers: {

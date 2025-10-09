@@ -12,7 +12,8 @@
 
                     <template #item.actions="{ item }">
                         <div class="d-flex ga-4">
-                            <v-icon color="warning" icon="mdi-pencil" size="large" @click.stop="editUser(item)"></v-icon>
+                            <v-icon color="warning" icon="mdi-pencil" size="large"
+                                @click.stop="editUser(item)"></v-icon>
 
                             <v-icon color="error" icon="mdi-delete" size="large" @click.stop="delUser(item)"></v-icon>
                         </div>
@@ -22,8 +23,8 @@
         </PfsCard>
 
         <PfsDialog :is-open="isEditing" dialogTitle="Edit user" primaryButtonType="success" @cancel="isEditing = false"
-            @submit="handleUpdate">
-            <EditUser v-if="editableUser" :user="editableUser" @update="handleUpdateUser" />
+            :disable-primary-button="disableSubmit()" @submit="handleUpdate">
+            <EditUser v-if="editableUser" :user="editableUser" @valid="handleEditValid" @update="handleUpdateUser" />
         </PfsDialog>
 
         <PfsDialog :is-open="isDeleting" dialogTitle="Delete user" primaryButtonType="error" primaryButtonTitle="Delete"
@@ -60,6 +61,9 @@ const isEditing = ref(false)
 const isDeleting = ref(false)
 const editableUser = ref<User | undefined>()
 const deletableUser = ref<User | undefined>()
+const isEditUserValid = ref(false)
+
+const disableSubmit = () => JSON.stringify(editableUser.value) === JSON.stringify(users.value.find(user => user.id === editableUser.value?.id)) || !isEditUserValid.value
 
 const editUser = (user: User) => {
     editableUser.value = JSON.parse(JSON.stringify(user))
@@ -71,12 +75,16 @@ const delUser = (user: User) => {
     isDeleting.value = true
 }
 
+const handleEditValid = (valid: boolean) => {
+    isEditUserValid.value = valid
+}
+
 const handleUpdateUser = (updUser: User) => {
     editableUser.value = updUser
 }
 
 const handleUpdate = async () => {
-    if (!editableUser.value) return
+    if (!editableUser.value || disableSubmit()) return
 
     isLoading.value = true
     await updateUser({

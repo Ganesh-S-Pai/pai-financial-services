@@ -6,7 +6,7 @@
         Please enter your credentials to log in.
       </p>
 
-      <v-form @submit.prevent="handleRegister">
+      <v-form ref="form" v-model="isValid" @submit.prevent="handleRegister">
         <v-container>
           <v-row>
             <v-col cols="12" md="8" offset-md="2">
@@ -25,13 +25,13 @@
 
                 <v-col cols="12" md="6">
                   <v-text-field clearable v-model="registrationData.email" type="text" label="Email"
-                    prepend-icon="mdi-email" variant="solo-filled" autocomplete="off" :rules="[required]" />
+                    prepend-icon="mdi-email" variant="solo-filled" autocomplete="off" :rules="emailRules()" />
                 </v-col>
 
                 <v-col cols="12" md="6">
-                  <v-text-field clearable v-model="registrationData.phone" type="number" label="Phone"
+                  <v-text-field clearable v-model.number="registrationData.phone" type="number" label="Phone"
                     prepend-icon="mdi-phone" variant="solo-filled" :maxlength="10" autocomplete="off"
-                    :rules="[required]" />
+                    :rules="phoneRules()" />
                 </v-col>
 
                 <v-col cols="12" md="6">
@@ -50,7 +50,7 @@
                   <v-text-field clearable v-model="registrationData.password" label="Password" prepend-icon="mdi-lock"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'"
                     hint="At least 8 characters" counter @click:append="showPassword = !showPassword"
-                    variant="solo-filled" autocomplete="off" :rules="[required]" />
+                    variant="solo-filled" autocomplete="off" :rules="passwordRules()" />
                 </v-col>
 
                 <v-col cols="12" md="6">
@@ -58,12 +58,12 @@
                     :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="showConfirmPassword ? 'text' : 'password'" hint="At least 8 characters" counter
                     @click:append="showConfirmPassword = !showConfirmPassword" variant="solo-filled" autocomplete="off"
-                    :rules="[required]" />
+                    :rules="confirmPasswordRules(registrationData.password)" />
                 </v-col>
 
                 <v-col cols="12">
                   <v-btn class="mb-8 mt-4" type="submit" color="success" size="large" variant="elevated"
-                    :disabled="disableRegister" block>
+                    :disabled="!isValid" block>
                     <strong>Register</strong>
                   </v-btn>
 
@@ -88,17 +88,20 @@ import { useCommonStore } from '@/stores/common';
 import { useDateUtil } from '@/utils/date';
 import { useFormUtils } from '@/utils/form';
 import { useRedirect } from '@/utils/redirect';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import type { VForm } from 'vuetify/components';
 import { VDateInput } from 'vuetify/labs/VDateInput';
 
 const route = useRoute();
 const commonStore = useCommonStore();
 const { redirect } = useRedirect();
 const { registerUser } = useAuthentication()
-const { required } = useFormUtils()
+const { required, passwordRules, confirmPasswordRules, emailRules, phoneRules } = useFormUtils()
 const { yesterday } = useDateUtil()
 
+const form = ref<InstanceType<typeof VForm> | null>(null)
+const isValid = ref(false)
 const isLoading = ref(false)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
@@ -115,9 +118,15 @@ const initialData = {
 const registrationData = ref(initialData)
 const confirmPassword = ref('')
 
-const disableRegister = computed(() => Object.values(registrationData.value).some(value => value === "") || confirmPassword.value === "")
-
 const handleRegister = async () => {
+  if (!form.value?.validate()) {
+    commonStore.addToast({
+      message: 'Form is invalid!',
+      color: 'error'
+    });
+    return
+  }
+
   isLoading.value = true;
 
   const user = {
