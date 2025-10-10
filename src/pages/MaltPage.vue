@@ -4,7 +4,8 @@ import PfsCard from '@/components/UI/PfsCard.vue';
 </script>
 
 <template>
-    <v-container class="pa-4" fluid>
-        <PfsCard title="Malt House" subtitle="Work in progress..."> </PfsCard>
-    </v-container>
-    </template>
+    <PfsCard>
+        <v-empty-state headline="Whoops, Malt House 404" title="Men at work"
+            text="The page you are looking for is still under construction..." image="/public/warning.png" />
+    </PfsCard>
+</template>

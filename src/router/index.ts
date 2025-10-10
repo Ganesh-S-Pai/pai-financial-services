@@ -40,6 +40,12 @@ const router = createRouter({
         component: () => import('@/pages/MaltPage.vue'),
         meta: { login: true },
       },
+      {
+        path: '/airbnb',
+        name: 'Airbnb',
+        component: () => import('@/pages/AirbnbPage.vue'),
+        meta: { login: true },
+      },
     ]
   },
   { path: '/login', name: 'Login', component: () => import('@/pages/LoginPage.vue') },

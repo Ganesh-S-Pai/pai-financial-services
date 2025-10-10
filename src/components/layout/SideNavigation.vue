@@ -6,6 +6,8 @@
       @click="navigateTo('/admin')" :active="isCurrentRoute('/admin')" />
     <v-list-item dense base-color="white" title="Van Heusen" prepend-icon="mdi-tshirt-crew" @click="navigateTo('/vhiw')"
       :active="isCurrentRoute('/vhiw')" />
+    <v-list-item dense base-color="white" title="Airbnb" prepend-icon="mdi-home-city" @click="navigateTo('/airbnb')"
+      :active="isCurrentRoute('/airbnb')" />
     <v-list-item dense base-color="white" title="Malt House" prepend-icon="mdi-taxi" @click="navigateTo('/malt')"
       :active="isCurrentRoute('/malt')" />
 
