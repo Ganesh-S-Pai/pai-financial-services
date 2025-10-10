@@ -18,7 +18,7 @@
           <strong> Login </strong>
         </v-btn>
 
-        <v-btn class="mb-8 mt-4" color="secondary" size="large" variant="outlined" block @click="redirect('/register')">
+        <v-btn class="mb-8 mt-4" color="secondary" size="large" variant="outlined" block @click="push('/register')">
           <strong> Register </strong>
         </v-btn>
       </v-form>
@@ -31,13 +31,13 @@ import PfsCard from '@/components/UI/PfsCard.vue';
 import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
 import { useFormUtils } from '@/utils/form';
-import { useRedirect } from '@/utils/redirect';
+import { useRouterUtil } from "@/utils/router";
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { VForm } from 'vuetify/components';
 
 const route = useRoute();
-const { redirect } = useRedirect();
+const { push, replace } = useRouterUtil();
 
 const commonStore = useCommonStore();
 const { authenticateUser, logoutUser } = useAuthentication();
@@ -69,7 +69,7 @@ const handleLogin = async () => {
       color: 'success'
     });
 
-    await redirect(redirectPath)
+    await replace(redirectPath)
   }
   catch (error) {
     commonStore.addToast({

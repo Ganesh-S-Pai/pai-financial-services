@@ -11,6 +11,9 @@
                         </v-col>
 
                         <v-col cols="12" md="6">
+                            <v-text-field clearable v-model.number="editableSalesLog.system" type="number"
+                                label="System" prepend-icon="mdi-desktop-classic" variant="solo-filled"
+                                autocomplete="off" :rules="[required]" />
                         </v-col>
                     </v-row>
                 </v-col>

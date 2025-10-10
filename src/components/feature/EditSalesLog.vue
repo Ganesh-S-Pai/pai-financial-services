@@ -20,12 +20,6 @@
                             <v-text-field clearable v-model.number="editableLog.sales" type="number" label="Sales"
                                 prepend-icon="mdi-sale" variant="solo-filled" autocomplete="off" :rules="[required]" />
                         </v-col>
-
-                        <v-col cols="12" md="6">
-                            <v-text-field clearable v-model.number="editableLog.system" type="number" label="System"
-                                prepend-icon="mdi-desktop-classic" variant="solo-filled" autocomplete="off"
-                                :rules="[required]" />
-                        </v-col>
                     </v-row>
                 </v-col>
             </v-row>

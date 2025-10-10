@@ -67,4 +67,8 @@ router.beforeEach((to, _from, next) => {
   next()
 })
 
+router.onError(() => {
+  router.push("/")
+})
+
 export default router

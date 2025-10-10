@@ -15,14 +15,14 @@
 <script setup lang="ts">
 import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
-import { useRedirect } from '@/utils/redirect';
+import { useRouterUtil } from "@/utils/router";
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 
 const { isAuthenticated } = useAuthentication()
 const commonStore = useCommonStore()
 const { mdAndDown } = useDisplay()
-const { redirectToHome } = useRedirect()
+const { redirectToHome } = useRouterUtil()
 
 const isMobile = computed(() => mdAndDown.value)
 const showDrawer = computed(() => isMobile.value && isAuthenticated())

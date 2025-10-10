@@ -9,7 +9,7 @@
       <v-divider></v-divider>
 
       <v-card-text>
-        <v-row dense>
+        <v-row dense v-if="user && user.email">
           <v-col cols="12" sm="6">
             <strong>First Name:</strong> {{ user?.first_name }}
           </v-col>
@@ -33,9 +33,14 @@
             <strong>Gender:</strong> {{ user?.gender }}
           </v-col>
         </v-row>
+
+        <v-empty-state v-else headline="Whoops, 404" title="User not found" text="The user you are looking for does not exist"
+          image="/public/warning.png">
+          Please check the URL or return to the
+          <router-link to="/">home page</router-link>.</v-empty-state>
       </v-card-text>
 
-      <v-card-actions v-if="user">
+      <v-card-actions v-if="user && user.email">
         <v-btn color="primary" @click="editProfile">
           <v-icon left>mdi-pencil</v-icon> Edit Profile
         </v-btn>
@@ -57,7 +62,7 @@ import PfsDialog from '@/components/UI/PfsDialog.vue'
 import { useUsers } from '@/services/userService'
 import type { User } from '@/types/auth'
 import { useDateUtil } from '@/utils/date'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { MonthFormat } from '../types/common'
 import { useCommonStore } from '@/stores/common'
 import { useRoute } from 'vue-router'
@@ -74,15 +79,12 @@ const editableUser = ref<User | undefined>()
 const isLoading = ref(true)
 const isEditing = ref(false)
 const isEditUserValid = ref(false)
-const queryId = route.query.id?.toString()
 
-const formattedDOB = computed(() => {
-  if (!user.value) return
+const queryId = computed(() => route.query.id?.toString())
 
-  return localeDateString(user.value.dob, MonthFormat.LONG)
-})
+const formattedDOB = computed(() => user.value?.dob ? localeDateString(user.value.dob, MonthFormat.LONG) : undefined)
 
-const isMyProfile = computed(() => queryId ? queryId === authStore.userId : true)
+const isMyProfile = computed(() => queryId.value ? queryId.value === authStore.userId : true)
 
 const disableSubmit = () => JSON.stringify(editableUser.value) === JSON.stringify(user.value) || !isEditUserValid.value
 
@@ -115,12 +117,21 @@ const handleSubmit = async () => {
 
 const loadData = async () => {
   isLoading.value = true
-  user.value = queryId ? await getUser(queryId) : await getUser()
+  user.value = queryId.value ? await getUser(queryId.value) : await getUser()
   editableUser.value = JSON.parse(JSON.stringify(user.value))
   isLoading.value = false
 }
 
+watch(
+  () => route.params,
+  async () => {
+    await loadData()
+  },
+  { deep: true, immediate: true }
+)
+
 onMounted(async () => {
+  user.value = undefined
   await loadData()
 })
 </script>

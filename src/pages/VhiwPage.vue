@@ -100,7 +100,6 @@ const handleUpdate = async () => {
     inward: +editableSalesLog.value.inward,
     outward: +editableSalesLog.value.outward,
     sales: +editableSalesLog.value.sales,
-    system: +editableSalesLog.value.system,
     date: date.toISOString()
   } as SalesLog)
   await loadSalesLogs()

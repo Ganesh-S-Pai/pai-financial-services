@@ -67,8 +67,7 @@
                     <strong>Register</strong>
                   </v-btn>
 
-                  <v-btn class="mb-4" color="secondary" size="large" variant="outlined" block
-                    @click="redirect('/login')">
+                  <v-btn class="mb-4" color="secondary" size="large" variant="outlined" block @click="push('/login')">
                     <strong>Login</strong>
                   </v-btn>
                 </v-col>
@@ -87,16 +86,16 @@ import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
 import { useDateUtil } from '@/utils/date';
 import { useFormUtils } from '@/utils/form';
-import { useRedirect } from '@/utils/redirect';
-import { ref } from 'vue';
+import { useRouterUtil } from "@/utils/router";
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { VForm } from 'vuetify/components';
 import { VDateInput } from 'vuetify/labs/VDateInput';
 
 const route = useRoute();
 const commonStore = useCommonStore();
-const { redirect } = useRedirect();
-const { registerUser } = useAuthentication()
+const { push, replace } = useRouterUtil();
+const { registerUser, logoutUser } = useAuthentication()
 const { required, passwordRules, confirmPasswordRules, emailRules, phoneRules } = useFormUtils()
 const { yesterday } = useDateUtil()
 
@@ -131,6 +130,7 @@ const handleRegister = async () => {
 
   const user = {
     ...registrationData.value,
+    phone: registrationData.value.phone.toString(),
     dob: new Date(registrationData.value.dob).toISOString().split("T")[0] as string
   }
 
@@ -143,7 +143,7 @@ const handleRegister = async () => {
     });
     registrationData.value = initialData
 
-    await redirect(redirectPath)
+    await replace(redirectPath)
     isLoading.value = false;
   }
   catch (error) {
@@ -155,6 +155,10 @@ const handleRegister = async () => {
     isLoading.value = false;
   };
 }
+
+onMounted(() => {
+  logoutUser()
+});
 </script>
 
 <style scoped>

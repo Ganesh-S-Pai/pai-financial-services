@@ -1,6 +1,7 @@
 <template>
-  <v-navigation-drawer app v-model="showDrawer" elevation="5" image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
-    :permanent="!isMobile" @update:modelValue="onDrawerChange">
+  <v-navigation-drawer app v-model="showDrawer" elevation="5"
+    image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg" :permanent="!isMobile"
+    @update:modelValue="onDrawerChange">
     <v-list-item dense base-color="white" title="Admin" prepend-icon="mdi-shield-crown" class="mt-2"
       @click="navigateTo('/admin')" :active="isCurrentRoute('/admin')" />
     <v-list-item dense base-color="white" title="Van Heusen" prepend-icon="mdi-tshirt-crew" @click="navigateTo('/vhiw')"
@@ -30,7 +31,7 @@
 <script setup lang="ts">
 import { useAuthentication } from "@/services/authService";
 import { useCommonStore } from "@/stores/common";
-import { useRedirect } from "@/utils/redirect";
+import { useRouterUtil } from "@/utils/router";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useDisplay } from "vuetify";
@@ -38,7 +39,7 @@ import { useDisplay } from "vuetify";
 const { mdAndDown } = useDisplay();
 const commonStore = useCommonStore();
 const { logoutUser } = useAuthentication();
-const { redirect } = useRedirect();
+const { push, replace } = useRouterUtil();
 const route = useRoute();
 
 const toggleSettings = ref(false);
@@ -66,11 +67,11 @@ const handleLogout = () => {
     message: "Logged out successfully",
     color: "success",
   });
-  setTimeout(() => redirect("/login"), 500);
+  setTimeout(() => replace("/login"), 500);
 };
 
 const navigateTo = (path: string) => {
-  redirect(path);
+  push(path);
   commonStore.drawer = false;
   toggleSettings.value = false;
 };

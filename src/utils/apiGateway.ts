@@ -1,10 +1,10 @@
 import { useAuthStore } from "@/stores/auth";
 import { useCommonStore } from "@/stores/common";
-import { useRedirect } from "@/utils/redirect";
+import { useRouterUtil } from "@/utils/router";
 
 export const apiGateway = () => {
     const baseUrl = import.meta.env.VITE_API_URL;
-    const { redirect } = useRedirect();
+    const { replace } = useRouterUtil();
     const authStore = useAuthStore();
     const commonStore = useCommonStore()
 
@@ -26,7 +26,7 @@ export const apiGateway = () => {
             if (response.status === 401 || response.status === 403) {
                 console.warn("API Gateway: Unauthorized (token invalid or expired).");
                 authStore.token = undefined
-                redirect("/login");
+                replace("/login");
                 commonStore.addToast({
                     message: 'Session expired!',
                     color: 'error'

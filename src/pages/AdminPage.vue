@@ -44,12 +44,12 @@ import { useCommonStore } from '@/stores/common';
 import type { User } from '@/types/auth';
 import type { TableHeader } from '@/types/common';
 import { useDateUtil } from '@/utils/date';
-import { useRedirect } from '@/utils/redirect';
+import { useRouterUtil } from "@/utils/router";
 import { onMounted, ref } from 'vue';
 
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
-const { redirect } = useRedirect()
+const { push } = useRouterUtil()
 const { getUsers, updateUser, deleteUser } = useUsers()
 const { localeDateString } = useDateUtil()
 
@@ -125,7 +125,7 @@ const handleDelete = async () => {
 }
 
 const handleRowClick = (_event: Event, row: { item: User }) => {
-    redirect(`/profile?id=${row.item.id}`)
+    push(`/profile?id=${row.item.id}`)
 }
 
 const loadUsers = async () => {
