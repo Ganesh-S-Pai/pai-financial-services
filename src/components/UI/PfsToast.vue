@@ -1,6 +1,6 @@
 <template>
     <v-snackbar v-for="toast in toasts" :key="toast.id" v-model="toast.show" :timeout="toast.timeout"
-        :color="toast.color" :top="toast.top" :bottom="toast.bottom" :left="toast.left" :right="toast.right">
+        location="bottom right" :color="toast.color" transition="v-slide-y-transition">
         {{ toast.message }}
         <template v-slot:actions>
             <v-btn text @click="toast.show = false"> Close </v-btn>

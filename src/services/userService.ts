@@ -28,7 +28,6 @@ export const useUsers = () => {
             }
         }
         catch (error) {
-            console.error('Error fetching users data:', error)
             throw error
         }
     }
@@ -52,7 +51,6 @@ export const useUsers = () => {
             }
         }
         catch (error) {
-            console.error('Error fetching user data:', error)
             throw error
         }
     }
@@ -64,11 +62,11 @@ export const useUsers = () => {
                 url += "/" + updatedUser.id
             }
 
-            const response = await put(url, updatedUser, {
+            const response = await put(url, {
                 headers: {
                     'Authorization': `Bearer ${getAuthToken() || ''}`,
                 },
-            })
+            }, updatedUser)
 
             const { data } = response
             if (data) {
@@ -78,7 +76,6 @@ export const useUsers = () => {
             }
         }
         catch (error) {
-            console.error('Error updating user data:', error)
             throw error
         }
     }
@@ -104,7 +101,6 @@ export const useUsers = () => {
             }
         }
         catch (error) {
-            console.error('Error deleting user data:', error)
             throw error
         }
     }

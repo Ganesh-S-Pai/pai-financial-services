@@ -11,8 +11,8 @@ export const useAuthentication = () => {
         const body: AuthCredentials = { email, password }
 
         const response = await post(endpoint,
-            body,
             {},
+            body
         )
 
         const { data } = response
@@ -30,12 +30,12 @@ export const useAuthentication = () => {
         const body: SignupRequest = user
 
         const response = await post(endpoint,
-            body,
             {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             },
+            body
         )
 
         const { data } = response
@@ -50,7 +50,7 @@ export const useAuthentication = () => {
 
     const logoutUser = (): void => { authStore.token = undefined }
 
-    const getAuthToken = (): string | undefined => authStore.token
+    const getAuthToken = (): string | undefined => authStore.token  
 
     const isAuthenticated = () => (): boolean => getAuthToken() !== null
 

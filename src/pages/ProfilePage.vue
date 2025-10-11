@@ -34,8 +34,8 @@
           </v-col>
         </v-row>
 
-        <v-empty-state v-else headline="Whoops, 404" title="User not found" text="The user you are looking for does not exist"
-          image="/public/warning.png">
+        <v-empty-state v-else headline="Whoops, 404" title="User not found"
+          text="The user you are looking for does not exist" image="/public/warning.png">
           Please check the URL or return to the
           <router-link to="/">home page</router-link>.</v-empty-state>
       </v-card-text>
@@ -116,10 +116,15 @@ const handleSubmit = async () => {
 }
 
 const loadData = async () => {
-  isLoading.value = true
-  user.value = queryId.value ? await getUser(queryId.value) : await getUser()
-  editableUser.value = JSON.parse(JSON.stringify(user.value))
-  isLoading.value = false
+  try {
+    isLoading.value = true
+    user.value = queryId.value ? await getUser(queryId.value) : await getUser()
+    editableUser.value = JSON.parse(JSON.stringify(user.value))
+    isLoading.value = false
+  }
+  catch {
+    isLoading.value = false
+  }
 }
 
 watch(
@@ -127,7 +132,7 @@ watch(
   async () => {
     await loadData()
   },
-  { deep: true, immediate: true }
+  { deep: true }
 )
 
 onMounted(async () => {

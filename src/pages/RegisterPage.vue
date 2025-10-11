@@ -146,12 +146,11 @@ const handleRegister = async () => {
     await replace(redirectPath)
     isLoading.value = false;
   }
-  catch (error) {
+  catch {
     commonStore.addToast({
       message: 'Registration failed. Please try again.',
       color: 'error'
     });
-    console.error('Registration failed:', error);
     isLoading.value = false;
   };
 }

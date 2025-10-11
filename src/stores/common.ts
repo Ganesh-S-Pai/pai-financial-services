@@ -12,10 +12,6 @@ export const useCommonStore = defineStore('common', () => {
             ...toast,
             id: Date.now(),
             timeout: 3000,
-            top: false,
-            bottom: false,
-            left: true,
-            right: false,
             show: true,
         })
 

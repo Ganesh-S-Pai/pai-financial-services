@@ -71,12 +71,7 @@ const handleLogin = async () => {
 
     await replace(redirectPath)
   }
-  catch (error) {
-    commonStore.addToast({
-      message: 'Login failed. Please check your credentials and try again.',
-      color: 'error'
-    });
-    console.error('Login failed:', error);
+  catch {
     isLoading.value = false;
   };
 }

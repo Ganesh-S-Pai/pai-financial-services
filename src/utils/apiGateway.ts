@@ -1,54 +1,33 @@
-import { useAuthStore } from "@/stores/auth";
-import { useCommonStore } from "@/stores/common";
-import { useRouterUtil } from "@/utils/router";
+
+import { useApiInterceptors } from "./apiInterceptors";
 
 export const apiGateway = () => {
     const baseUrl = import.meta.env.VITE_API_URL;
-    const { replace } = useRouterUtil();
-    const authStore = useAuthStore();
-    const commonStore = useCommonStore()
 
-    const httpRequest = async (endpoint: string, method: string, body?: unknown, options: RequestInit = {}) => {
+    const { requestInterceptor, responseInterceptor } = useApiInterceptors()
+
+    const httpRequest = async (endpoint: string, method: string, options: RequestInit = {}, body?: unknown) => {
         try {
-            const config: RequestInit = {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...options.headers,
-                },
-                ...options,
-            };
-            if (body) {
-                config.body = JSON.stringify(body);
-            }
+            const config: RequestInit = requestInterceptor(method, options, body)
+
             const response = await fetch(`${baseUrl}${endpoint}`, config);
 
-            if (response.status === 401 || response.status === 403) {
-                console.warn("API Gateway: Unauthorized (token invalid or expired).");
-                authStore.token = undefined
-                replace("/login");
-                commonStore.addToast({
-                    message: 'Session expired!',
-                    color: 'error'
-                });
-                throw new Error("Unauthorized - session expired");
-            }
+            responseInterceptor(response)
 
             return response.json();
         }
         catch (error) {
-            console.error(`Error during ${method} request to ${endpoint}:`, error);
             throw error;
         }
     }
 
-    const get = async (endpoint: string, options: RequestInit = {}) => httpRequest(endpoint, 'GET', undefined, options)
+    const get = async (endpoint: string, options: RequestInit = {}) => httpRequest(endpoint, 'GET', options)
 
-    const post = async (endpoint: string, body: unknown, options: RequestInit = {}) => httpRequest(endpoint, 'POST', body, options)
+    const post = async (endpoint: string, options: RequestInit = {}, body: unknown) => httpRequest(endpoint, 'POST', options, body)
 
-    const put = async (endpoint: string, body: unknown, options: RequestInit = {}) => httpRequest(endpoint, 'PUT', body, options)
+    const put = async (endpoint: string, options: RequestInit = {}, body: unknown) => httpRequest(endpoint, 'PUT', options, body)
 
-    const del = async (endpoint: string, options: RequestInit = {}) => httpRequest(endpoint, 'DELETE', undefined, options)
+    const del = async (endpoint: string, options: RequestInit = {}) => httpRequest(endpoint, 'DELETE', options)
 
     return { get, post, put, del };
 }

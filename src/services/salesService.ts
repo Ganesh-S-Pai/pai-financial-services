@@ -42,7 +42,6 @@ export const useSalesService = () => {
       }
     }
     catch (error) {
-      console.error('Error fetching sales log:', error)
       throw error
     }
   }
@@ -51,11 +50,11 @@ export const useSalesService = () => {
     try {
       const url = endpoint + "/" + id
 
-      const response = await put(url, salesLog, {
+      const response = await put(url, {
         headers: {
           'Authorization': `Bearer ${getAuthToken() || ''}`,
         },
-      })
+      }, salesLog)
 
       const { data, message } = response
       if (data) {
@@ -65,18 +64,17 @@ export const useSalesService = () => {
       }
     }
     catch (error) {
-      console.error('Error updating sales log data:', error)
       throw error
     }
   }
-  
+
   const createSalesLog = async (salesLog: SalesLog) => {
     try {
-      const response = await post(endpoint, salesLog, {
+      const response = await post(endpoint, {
         headers: {
           'Authorization': `Bearer ${getAuthToken() || ''}`,
         },
-      })
+      }, salesLog)
 
       const { data, message } = response
       if (data) {
@@ -86,7 +84,6 @@ export const useSalesService = () => {
       }
     }
     catch (error) {
-      console.error('Error creating sales log data:', error)
       throw error
     }
   }

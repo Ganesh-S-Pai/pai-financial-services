@@ -3,9 +3,5 @@ export interface ToastItem {
     message: string,
     color: string,
     timeout?: number,
-    top?: boolean,
-    bottom?: boolean,
-    left?: boolean,
-    right?: boolean,
     show?: boolean
 }
