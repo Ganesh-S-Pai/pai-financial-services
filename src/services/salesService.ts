@@ -2,20 +2,7 @@ import { useDateUtil } from "@/utils/date"
 import { useAuthentication } from "./authService"
 import { apiGateway } from "@/utils/apiGateway"
 import { MonthFormat } from "@/types/common"
-
-export interface SalesLog {
-  id: string
-  date: string
-  opening: number
-  inward: number
-  sales: number
-  outward: number
-  physical: number
-  system: number
-  difference: number
-  created_at: string
-  updated_at: string
-}
+import type { SalesLog } from "@/types/sales"
 
 export const useSalesService = () => {
   const { getAuthToken } = useAuthentication()

@@ -5,17 +5,15 @@
                 <v-data-table v-if="!isLoading" :items="users" :headers="headers" :search="search"
                     @click:row="handleRowClick">
                     <template #top>
-                        <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
-                            variant="outlined" hide-details single-line>
-                        </v-text-field>
+                        <v-text-field v-model="search" label="Search users" placeholder="Search users"
+                            prepend-inner-icon="mdi-magnify" variant="outlined" clearable hide-details single-line />
                     </template>
 
                     <template #item.actions="{ item }">
                         <div class="d-flex ga-4">
-                            <v-icon color="warning" icon="mdi-pencil" size="large"
-                                @click.stop="editUser(item)"></v-icon>
+                            <v-icon color="warning" icon="mdi-pencil" size="large" @click.stop="editUser(item)" />
 
-                            <v-icon color="error" icon="mdi-delete" size="large" @click.stop="delUser(item)"></v-icon>
+                            <v-icon color="error" icon="mdi-delete" size="large" @click.stop="delUser(item)" />
                         </div>
                     </template>
                 </v-data-table>
@@ -43,6 +41,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useCommonStore } from '@/stores/common';
 import type { User } from '@/types/auth';
 import type { TableHeader } from '@/types/common';
+import { snakeToTitle } from '@/utils/common';
 import { useDateUtil } from '@/utils/date';
 import { useRouterUtil } from "@/utils/router";
 import { onMounted, ref } from 'vue';
@@ -142,10 +141,9 @@ const loadHeaders = () => {
     headers.value = Object.keys(users.value[0] || {})
         .filter((key) => !['id'].includes(key))
         .map((key) => ({
-            title: key.charAt(0).toUpperCase() + key.slice(1),
-            value: key,
+            title: snakeToTitle(key),
             key
-        })).concat({ title: 'Actions', value: 'actions', key: 'actions' })
+        } as TableHeader)).concat({ title: 'Actions', key: 'actions' } as TableHeader)
 }
 
 onMounted(async () => {

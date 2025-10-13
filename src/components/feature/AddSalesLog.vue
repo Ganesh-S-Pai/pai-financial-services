@@ -25,11 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import type { SalesLog } from '@/services/salesService';
 import { ref, watch, watchEffect } from 'vue';
 import EditSalesLog from './EditSalesLog.vue';
 import { useFormUtils } from '@/utils/form';
 import { VDateInput } from 'vuetify/labs/VDateInput';
+import type { SalesLog } from '@/types/sales';
 
 const { required } = useFormUtils()
 

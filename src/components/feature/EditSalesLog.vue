@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import type { SalesLog } from '@/services/salesService';
+import type { SalesLog } from '@/types/sales';
 import { useFormUtils } from '@/utils/form';
 import { ref, watch } from 'vue';
 

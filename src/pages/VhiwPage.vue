@@ -7,12 +7,11 @@
             <v-toolbar flat>
               <v-toolbar-title>
                 <v-icon color="medium-emphasis" icon="mdi-hanger" size="x-small" start></v-icon>
-
                 Stock on hand (Audit)
               </v-toolbar-title>
 
-              <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined"
-                bg-color="white" density="compact" hide-details single-line />
+              <v-text-field v-model="search" label="Search" placeholder="Search" prepend-inner-icon="mdi-magnify"
+                variant="outlined" bg-color="white" density="compact" clearable hide-details single-line />
 
               <v-btn class="me-2 ml-2" prepend-icon="mdi-plus" rounded="lg" text="Add" color="primary"
                 variant="elevated" border @click="addSalesLog" />
@@ -47,9 +46,11 @@ import AddSalesLog from '@/components/feature/AddSalesLog.vue'
 import EditSalesLog from '@/components/feature/EditSalesLog.vue'
 import PfsCard from '@/components/UI/PfsCard.vue'
 import PfsDialog from '@/components/UI/PfsDialog.vue'
-import { useSalesService, type SalesLog } from '@/services/salesService'
+import { useSalesService } from '@/services/salesService'
 import { useCommonStore } from '@/stores/common'
 import type { TableHeader } from '@/types/common'
+import type { SalesLog } from '@/types/sales'
+import { snakeToTitle } from '@/utils/common'
 import { onMounted, ref } from 'vue'
 import type { SortItem } from 'vuetify/lib/components/VDataTable/composables/sort.mjs'
 
@@ -171,10 +172,9 @@ onMounted(async () => {
   headers.value = Object.keys(salesLog.value[0] || {})
     .filter((key) => !['id', 'created_at', 'updated_at'].includes(key))
     .map((key) => ({
-      title: key.charAt(0).toUpperCase() + key.slice(1),
-      value: key,
+      title: snakeToTitle(key),
       key
-    })).concat({ title: 'Actions', value: 'actions', key: 'actions' })
+    } as TableHeader)).concat({ title: 'Actions', key: 'actions' } as TableHeader)
   isLoading.value = false
 })
 </script>
