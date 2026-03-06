@@ -1,5 +1,5 @@
 export interface ToastItem {
-    id?: number,
+    id: number,
     message: string,
     color: string,
     timeout?: number,

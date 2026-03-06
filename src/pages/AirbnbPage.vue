@@ -22,7 +22,7 @@
                                         Airbnb
                                     </v-toolbar-title>
 
-                                    <v-text-field v-model="search" label="Search transaction, type or remark"
+                                    <v-text-field v-model.trim="search" label="Search transaction, type or remark"
                                         placeholder="Search transaction, type or remark" variant="outlined"
                                         bg-color="white" density="compact" clearable hide-details single-line
                                         @keydown.enter="searchData" @click:clear="searchData">

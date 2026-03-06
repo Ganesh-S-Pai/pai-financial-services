@@ -16,11 +16,11 @@
         <v-btn class="mb-8 mt-4" type="submit" color="success" size="large" variant="elevated" block
           :disabled="!isValid">
           <strong> Login </strong>
-        </v-btn>
+          </v-btn>
 
         <v-btn class="mb-8 mt-4" color="secondary" size="large" variant="outlined" block @click="push('/register')">
           <strong> Register </strong>
-        </v-btn>
+          </v-btn>
       </v-form>
     </div>
   </PfsCard>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import PfsCard from '@/components/UI/PfsCard.vue';
+import type { ToastItem } from '@/components/UI/types/PfsToast.types';
 import { useAuthentication } from '@/services/authService';
 import { useCommonStore } from '@/stores/common';
 import { useFormUtils } from '@/utils/form';
@@ -56,7 +57,7 @@ const handleLogin = async () => {
     commonStore.addToast({
       message: 'Form is invalid!',
       color: 'error'
-    });
+    } as ToastItem);
     return
   }
 
@@ -67,7 +68,7 @@ const handleLogin = async () => {
     commonStore.addToast({
       message: 'Login successful!',
       color: 'success'
-    });
+    } as ToastItem);
 
     await replace(redirectPath)
   }
