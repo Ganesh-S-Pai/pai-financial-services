@@ -4,9 +4,29 @@ export interface DateInfo {
   end: string;
 }
 
+export const transactionTypes = {
+  booking: {
+    airbnb: "Airbnb",
+    direct: "Direct"
+  },
+  expense: {
+    rent: "Rent",
+    electricity: "Electricity",
+    water: "Water",
+    internet: "Internet",
+    houseKeeping: "HouseKeeping",
+    miscellaneous: "Miscellaneous"
+  }
+}
+
+export enum Transaction {
+  Booking = "Booking",
+  Expense = "Expense"
+}
+
 export interface Statement {
   id: string;
-  transaction: "Expense" | "Booking";
+  transaction: Transaction;
   type: string;
   date_info: DateInfo;
   nights: number;
@@ -16,6 +36,18 @@ export interface Statement {
   updated_user: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface StatementRequest {
+  transaction: Transaction;
+  type: string;
+  date_info: DateInfo;
+  amount: number | string;
+  remark: string;
+  created_user?: string;
+  updated_user: string;
+  created_at?: Date;
+  updated_at: Date;
 }
 
 export interface ExpenseSummary {
@@ -50,12 +82,12 @@ export interface Airbnb {
 }
 
 export enum AirbnbPanels {
-    Total,
-    Bookings,
-    Expenses
+  Total,
+  Bookings,
+  Expenses
 }
 
 export enum AirbnbTabs {
-    Overview,
-    Statement
+  Overview,
+  Statement
 }

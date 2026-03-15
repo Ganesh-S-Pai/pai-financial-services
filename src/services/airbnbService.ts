@@ -1,6 +1,6 @@
 import { apiGateway } from "@/utils/apiGateway"
 import { useAuthentication } from "./authService"
-import type { Airbnb, Statement } from "@/types/airbnb"
+import type { Airbnb, Statement, StatementRequest } from "@/types/airbnb"
 
 
 export const useAirbnbService = () => {
@@ -34,7 +34,7 @@ export const useAirbnbService = () => {
         }
     }
 
-    const addStatement = async (statement: Statement) => {
+    const addStatement = async (statement: StatementRequest) => {
         try {
             const response = await post(baseEndpoint, {
                 headers: {

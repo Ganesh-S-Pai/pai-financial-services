@@ -12,7 +12,7 @@
                 <v-tabs-window-item :value="AirbnbTabs.Statement">
                     <v-container>
                         <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="headers" :items="statement"
-                            :items-length="totalItems" :loading="isLoading" item-value="name"
+                            :items-length="totalItems" :loading="isLoading" :key="tableKey" item-value="name"
                             @update:options="loadData">
 
                             <template #top>
@@ -35,7 +35,8 @@
                                     </v-text-field>
 
                                     <v-btn class="me-2 ml-4" prepend-icon="mdi-plus" rounded="lg" text="Add"
-                                        color="primary" variant="elevated" border @click="() => { }" />
+                                        color="primary" variant="elevated" :disabled="isLoading" border
+                                        @click="addAirbnbStatement" />
                                 </v-toolbar>
                             </template>
 
@@ -47,22 +48,34 @@
                 </v-tabs-window-item>
             </v-tabs-window>
         </PfsCard>
+
+        <PfsDialog :is-open="isAdding" dialogTitle="Add new statement" primaryButtonType="success"
+            :disable-primary-button="!isAddStatementValid" @cancel="isAdding = false" @submit="handleCreate">
+            <AddAirbnbStatement @valid="handleAddStatementValid" @update="handleCreateAirbnbStatement" />
+        </PfsDialog>
     </v-container>
 </template>
 
 <script setup lang="ts">
+import AddAirbnbStatement from '@/components/feature/AddAirbnbStatement.vue'
 import AirbnbSummary from '@/components/feature/AirbnbSummary.vue'
 import PfsCard from '@/components/UI/PfsCard.vue'
+import PfsDialog from '@/components/UI/PfsDialog.vue'
 import { useAirbnbService } from '@/services/airbnbService'
-import { AirbnbTabs, type DateInfo, type Statement, type Summary } from '@/types/airbnb'
+import { useAuthStore } from '@/stores/auth'
+import { useCommonStore } from '@/stores/common'
+import { AirbnbTabs, type DateInfo, type Statement, type StatementRequest, type Summary } from '@/types/airbnb'
 import type { TableHeader } from '@/types/common'
 import { formatCurrency, snakeToTitle } from '@/utils/common'
 import { useDateUtil } from '@/utils/date'
 import { ref } from 'vue'
 
-const { getAirbnbData } = useAirbnbService()
+const commonStore = useCommonStore()
+const authStore = useAuthStore()
+const { getAirbnbData, addStatement } = useAirbnbService()
 const { localeDateString } = useDateUtil()
 
+const tableKey = ref(0)
 const tab = ref(AirbnbTabs.Statement)
 const isLoading = ref(false)
 const statement = ref<Statement[]>([])
@@ -72,6 +85,21 @@ const itemsPerPage = ref(10)
 const headers = ref<TableHeader[]>([])
 const search = ref('')
 const oldSearch = ref('')
+const isAdding = ref(false)
+const newAirbnbStatement = ref<StatementRequest | undefined>()
+const isAddStatementValid = ref(false)
+
+const handleAddStatementValid = (valid: boolean) => {
+    isAddStatementValid.value = valid
+}
+
+const addAirbnbStatement = () => {
+    isAdding.value = true
+}
+
+const handleCreateAirbnbStatement = (salesLog: StatementRequest) => {
+    newAirbnbStatement.value = salesLog
+}
 
 const searchData = () => {
     if (search.value !== oldSearch.value) {
@@ -118,4 +146,29 @@ const loadData = async ({ page, itemsPerPage }: { page: number, itemsPerPage: nu
     }
 }
 
+const handleCreate = async () => {
+    if (!newAirbnbStatement.value) return
+
+    isLoading.value = true
+
+    const createdDate = new Date()
+
+    await addStatement({
+        ...newAirbnbStatement.value,
+        created_at: createdDate,
+        updated_at: createdDate,
+        created_user: authStore.userId,
+        updated_user: authStore.userId ?? "0"
+    })
+
+    tableKey.value++
+
+    commonStore.addToast({
+        message: 'Airbnb statement created successfully!',
+        color: 'success'
+    });
+
+    isAdding.value = false
+    isLoading.value = false
+}
 </script>

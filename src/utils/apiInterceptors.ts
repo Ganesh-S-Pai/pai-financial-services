@@ -36,7 +36,7 @@ export const useApiInterceptors = () => {
                     authStore.token = undefined
                     authStore.userId = undefined
                     if (authStore.userId)
-                        throw new Error("Unauthorized - session expired");
+                        throw new Error("Unauthorized - session expired!");
                 }
                 throw new Error(errorData.message)
             }
